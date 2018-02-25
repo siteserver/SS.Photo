@@ -72,7 +72,7 @@ namespace SS.Photo.Provider
         private const string SqlDeletePhotoContents = "DELETE FROM ss_Photo WHERE SiteId = @SiteId AND ContentId = @ContentId";
 
         private const string ParmId = "@Id";
-        private const string ParmPublishmentsystemid = "@SiteId";
+        private const string ParmSiteId = "@SiteId";
         private const string ParmContentid = "@ContentId";
         private const string ParmSmallUrl = "@SmallUrl";
         private const string ParmMiddleUrl = "@MiddleUrl";
@@ -80,7 +80,7 @@ namespace SS.Photo.Provider
         private const string ParmTaxis = "@Taxis";
         private const string ParmDescription = "@Description";
 
-        public void Insert(PhotoInfo photoInfo)
+        public int Insert(PhotoInfo photoInfo)
         {
             var maxTaxis = GetMaxTaxis(photoInfo.SiteId, photoInfo.ContentId);
             photoInfo.Taxis = maxTaxis + 1;
@@ -89,7 +89,7 @@ namespace SS.Photo.Provider
 
             var parms = new[]
             {
-                _helper.GetParameter(ParmPublishmentsystemid, photoInfo.SiteId),
+                _helper.GetParameter(ParmSiteId, photoInfo.SiteId),
                 _helper.GetParameter(ParmContentid, photoInfo.ContentId),
                 _helper.GetParameter(ParmSmallUrl, photoInfo.SmallUrl),
                 _helper.GetParameter(ParmMiddleUrl, photoInfo.MiddleUrl),
@@ -98,7 +98,7 @@ namespace SS.Photo.Provider
                 _helper.GetParameter(ParmDescription, photoInfo.Description)
             };
 
-            _helper.ExecuteNonQuery(_connectionString, sqlString, parms);
+            return _helper.ExecuteNonQueryAndReturnId(TableName, "Id", _connectionString, sqlString, parms);
         }
 
         public void Update(PhotoInfo photoInfo)
@@ -114,6 +114,27 @@ namespace SS.Photo.Provider
             };
 
             _helper.ExecuteNonQuery(_connectionString, SqlUpdatePhotoContent, updateParms);
+        }
+
+        public void UpdateDescription(int photoId, string description)
+        {
+            var parameters = new[]
+            {
+                _helper.GetParameter(nameof(PhotoInfo.Description), description),
+                _helper.GetParameter(nameof(PhotoInfo.Id), photoId)
+            };
+
+            _helper.ExecuteNonQuery(_connectionString, $"UPDATE ss_Photo SET {nameof(PhotoInfo.Description)} = @{nameof(PhotoInfo.Description)} WHERE {nameof(PhotoInfo.Id)} = @{nameof(PhotoInfo.Id)}", parameters);
+        }
+
+        public void UpdateTaxis(List<int> photoIds)
+        {
+            var taxis = 1;
+            foreach (var photoId in photoIds)
+            {
+                SetTaxis(photoId, taxis);
+                taxis++;
+            }
         }
 
         public void Delete(int id)
@@ -139,7 +160,7 @@ namespace SS.Photo.Provider
         {
             var parms = new[]
             {
-                _helper.GetParameter(ParmPublishmentsystemid, siteId),
+                _helper.GetParameter(ParmSiteId, siteId),
                 _helper.GetParameter(ParmContentid, contentId)
             };
 
@@ -254,13 +275,6 @@ namespace SS.Photo.Provider
             return list;
         }
 
-        private int GetTaxis(int id)
-        {
-            var sqlString = $"SELECT Taxis FROM ss_Photo WHERE (Id = {id})";
-
-            return _helper.ExecuteInt(_connectionString, sqlString);
-        }
-
         private void SetTaxis(int id, int taxis)
         {
             string sqlString = $"UPDATE ss_Photo SET Taxis = {taxis} WHERE (Id = {id})";
@@ -275,81 +289,13 @@ namespace SS.Photo.Provider
 
             using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
             {
-                if (rdr.Read())
+                if (rdr.Read() && !rdr.IsDBNull(0))
                 {
                     maxTaxis = rdr.GetInt32(0);
                 }
                 rdr.Close();
             }
             return maxTaxis;
-        }
-
-        public bool UpdateTaxisToUp(int siteId, int contentId, int id)
-        {
-            //Get Higher Taxis and Id
-            //string sqlString =
-            //    $"SELECT TOP 1 Id, Taxis FROM ss_Photo WHERE (Taxis > (SELECT Taxis FROM ss_Photo WHERE Id = {id}) AND (SiteId = {siteId} AND ContentId = {contentId})) ORDER BY Taxis";
-            string sqlString = _helper.ToTopSqlString(TableName, "Id, Taxis", $"WHERE (Taxis > (SELECT Taxis FROM ss_Photo WHERE Id = {id}) AND (SiteId = {siteId} AND ContentId = {contentId}))", "ORDER BY Taxis", 1);
-
-            var higherId = 0;
-            var higherTaxis = 0;
-
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
-            {
-                if (rdr.Read())
-                {
-                    higherId = _helper.GetInt(rdr, 0);
-                    higherTaxis = _helper.GetInt(rdr, 1);
-                }
-                rdr.Close();
-            }
-
-            if (higherId > 0)
-            {
-                //Get Taxis Of Selected Id
-                var selectedTaxis = GetTaxis(id);
-
-                //Set The Selected Class Taxis To Higher Level
-                SetTaxis(id, higherTaxis);
-                //Set The Higher Class Taxis To Lower Level
-                SetTaxis(higherId, selectedTaxis);
-                return true;
-            }
-            return false;
-        }
-
-        public bool UpdateTaxisToDown(int siteId, int contentId, int id)
-        {
-            //Get Lower Taxis and Id
-            //string sqlString =
-            //    $"SELECT TOP 1 Id, Taxis FROM ss_Photo WHERE (Taxis < (SELECT Taxis FROM ss_Photo WHERE Id = {id}) AND (SiteId = {siteId} AND ContentId = {contentId})) ORDER BY Taxis DESC";
-            var sqlString = _helper.ToTopSqlString(TableName, "Id, Taxis", $"WHERE (Taxis < (SELECT Taxis FROM ss_Photo WHERE Id = {id}) AND (SiteId = {siteId} AND ContentId = {contentId}))", "ORDER BY Taxis DESC", 1);
-
-            var lowerId = 0;
-            var lowerTaxis = 0;
-
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
-            {
-                if (rdr.Read())
-                {
-                    lowerId = _helper.GetInt(rdr, 0);
-                    lowerTaxis = _helper.GetInt(rdr, 1);
-                }
-                rdr.Close();
-            }
-
-            if (lowerId > 0)
-            {
-                //Get Taxis Of Selected Class
-                var selectedTaxis = GetTaxis(id);
-
-                //Set The Selected Class Taxis To Lower Level
-                SetTaxis(id, lowerTaxis);
-                //Set The Lower Class Taxis To Higher Level
-                SetTaxis(lowerId, selectedTaxis);
-                return true;
-            }
-            return false;
         }
 
         private PhotoInfo GetPhotoInfo(IDataReader rdr)
@@ -383,7 +329,7 @@ namespace SS.Photo.Provider
 
             using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
             {
-                if (rdr.Read())
+                if (rdr.Read() && !rdr.IsDBNull(0))
                 {
                     contentId = _helper.GetInt(rdr, 0);
                 }

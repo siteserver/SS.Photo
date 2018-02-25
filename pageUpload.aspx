@@ -4,277 +4,267 @@
 
 	<head>
 		<meta charset="utf-8">
-		<link href="assets/plugin-utils/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<link href="assets/plugin-utils/css/plugin-utils.css" rel="stylesheet" type="text/css" />
-		<link href="assets/plugin-utils/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-		<link href="assets/plugin-utils/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/siteserver/siteserver.min.css" rel="stylesheet" type="text/css" />
 	</head>
 
 
 	<body style="padding: 20px;">
 		<form runat="server">
 
-			<div class="row">
-				<div class="card-box">
-					<div class="row">
-						<div class="col-lg-12">
-							<h4 class="m-t-0 header-title">
-								<b>上传图片</b>
-							</h4>
-							<p class="text-muted font-13 m-b-30">
-								在此设置多图内容图片上传尺寸
-							</p>
+			<div class="card-box">
+				<div class="row">
+					<div class="col-lg-12">
+						<h4 class="m-t-0 header-title">
+							<b>上传内容图片</b>
+						</h4>
+						<p class="text-muted font-13 m-b-10">
+							可选择多幅图片一次上传
+						</p>
+					</div>
+				</div>
+
+				<div id="drop-area" style="height: 200px; line-height: 200px; text-align: center; font-size: 18px; color: #777; border: 2px dashed #0000004d;
+						background: #fff;	border-radius: 6px; cursor: pointer; margin-bottom: 20px">
+					点击选择上传图片或者将图片拖拽到此区域
+				</div>
+
+				<div id="main" class="row">
+
+					<div class="col-sm-4 col-lg-3 col-xs-12" v-for="(photo, index) in photos">
+
+						<div class="card m-b-20">
+
+							<a v-bind:href="photo.largeUrl" target="_blank">
+								<img class="card-img-top img-fluid" v-bind:src="photo.middleUrl">
+							</a>
+
+							<div class="card-body">
+								<p class="card-text" v-bind:style="{ display: photo.description ? '' : 'none' }" style="display: none">
+									{{ photo.description }}
+								</p>
+								<a @click="describe(photo)" href="javascript:;" class="card-link text-success">
+									{{ photo.description ? '修改说明' : '添加说明' }}
+								</a>
+								<a @click="order(photo, index)" href="javascript:;" class="card-link text-success">排 序</a>
+								<a @click="del(photo)" href="javascript:;" class="card-link text-danger">删 除</a>
+							</div>
+
 						</div>
+
 					</div>
 
-					<div class="row">
-						<div class="col-sm-12">
-							<div class="card-box">
-								<h4>
-									<i class="fa fa-paperclip m-r-10 m-b-10"></i> Attachments
-									<span>(3)</span>
-								</h4>
-
-								<div class="row">
-									<div class="col-sm-2">
-										<a href="#">
-											<img src="assets/images/small/img1.jpg" alt="attachment" class="img-thumbnail img-responsive"> </a>
-									</div>
-									<div class="col-sm-2">
-										<a href="#">
-											<img src="assets/images/small/img2.jpg" alt="attachment" class="img-thumbnail img-responsive"> </a>
-									</div>
-									<div class="col-sm-2">
-										<a href="#">
-											<img src="assets/images/small/img3.jpg" alt="attachment" class="img-thumbnail img-responsive"> </a>
-									</div>
-									<div class="col-sm-6">
-										<p>
-											<b>Hi Bro...</b>
-										</p>
-										<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis
-											natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque
-											eu, pretium quis, sem.</p>
-										<p>Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo,
-											rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
-											Cras dapibus. Vivamus elementum semper nisi.</p>
-										<p>Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam
-											lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque
-											rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
-											Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem
-											neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar,</p>
+					<div class="modal" tabindex="-1" role="dialog" v-bind:style="{ display: op === 'describe' && photo ? 'block' : 'none' }"
+					  style="display: none;top: 100px;">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h4 class="modal-title">图片说明</h4>
+								</div>
+								<div class="modal-body">
+									<div class="input-group">
+										<textarea class="form-control" style="height: 150px" v-model="description"></textarea>
 									</div>
 								</div>
+								<div class="modal-footer">
+									<button type="button" @click="saveDescription" class="btn btn-primary">保 存</button>
+									<button type="button" @click="close" class="btn btn-secondary" data-dismiss="modal">取 消</button>
+								</div>
 							</div>
-
 						</div>
 					</div>
-
-				</div>
-			</div>
-
-			<script type="text/javascript" src="assets/js/ajaxupload.js"></script>
-			<script type="text/javascript" src="assets/swfUpload/swfupload.js"></script>
-			<script type="text/javascript" src="assets/swfUpload/handlers.js"></script>
-
-			<script type="text/javascript">
-				function uploadSuccess(file, response) {
-					try {
-						if (response) {
-							response = eval("(" + response + ")");
-
-							if (response.success == 'true') {
-								add_form();
-								var $count = $('#Photo_Count');
-								var index = parseInt($count.val());
-								$("#imgPhoto_" + index).attr('src', response.url);
-								$("#SmallUrl_" + index).val(response.smallUrl);
-								$("#MiddleUrl_" + index).val(response.middleUrl);
-								$("#LargeUrl_" + index).val(response.largeUrl);
-							} else {
-								alert(response.message);
-							}
-						}
-					} catch (ex) {
-						this.debug(ex);
-					}
-				}
-
-				var swfu;
-				$(document).ready(function () {
-					swfu = new SWFUpload({
-						// Backend Settings
-						upload_url: "<%=GetContentPhotoUploadMultipleUrl()%>",
-
-						// File Upload Settings
-						file_size_limit: "10 MB",
-						file_types: "*.jpg;*.jpeg;*.gif;*.png",
-						file_types_description: "Images",
-						file_upload_limit: 0, // Zero means unlimited
-
-						// Event Handler Settings - these functions as defined in Handlers.js
-						//  The handlers are not part of SWFUpload but are part of my website and control how
-						//  my website reacts to the SWFUpload events.
-						swfupload_preload_handler: preLoad,
-						swfupload_load_failed_handler: loadFailed,
-						file_queue_error_handler: fileQueueError,
-						file_dialog_complete_handler: fileDialogComplete,
-						upload_error_handler: uploadError,
-						upload_success_handler: uploadSuccess,
-						upload_complete_handler: uploadComplete,
-
-						// Button settings
-						button_image_url: "assets/swfUpload/button.png",
-						button_placeholder_id: "swfUploadPlaceholder",
-						button_width: 114,
-						button_height: 22,
-						button_text: '» 批量添加图片',
-						button_text_top_padding: 1,
-						button_text_left_padding: 10,
-
-						// Flash Settings
-						flash_url: "assets/swfUpload/swfupload.swf", // Relative to this file
-						flash9_url: "assets/swfUpload/swfupload_FP9.swf", // Relative to this file
-
-						// Debug Settings
-						debug: false
-					});
-				});
-			</script>
-
-			<div class="popover popover-static">
-				<h3 class="popover-title">上传图片</h3>
-				<div class="popover-content">
-
-					<div id="contents">
-						<table border=0 cellspacing=5 cellpadding=5 width="95%">
-							<tr>
-								<td colspan="2">
-									<input id="Photo_Count" type="hidden" name="Photo_Count" value="0" />
-								</td>
-							</tr>
-							<tr>
-								<td align="right">
-									<table width="240" border="0" cellspacing="0" cellpadding="0">
-										<tr>
-											<td>
-												<span id="swfUploadPlaceholder"></span>
-											</td>
-										</tr>
-									</table>
-								</td>
-								<td align="right">&nbsp;</td>
-							</tr>
-						</table>
-					</div>
-
-					<hr />
-					<table class="table noborder">
-						<tr>
-							<td class="center">
-								<asp:Button class="btn btn-primary" id="Submit" OnClick="Submit_OnClick" Text="确 定" runat="server" />
-								<asp:Button class="btn" id="Return" CausesValidation="false" OnClick="Return_OnClick" Text="返 回" runat="server" />
-							</td>
-						</tr>
-					</table>
-
-				</div>
-			</div>
-
-			<div id="Photo_0" style="display:none">
-				<table class="table table-noborder">
-					<tr>
-						<td>
-							<img id="imgPhoto_0" style="border: #ccc 1px solid; padding:1px;" src="assets/preview.gif" <%=GetPreviewImageSize() %> />
-							<div>
-								<a id="uploadFile_0" href="javascript:void(0);">» 上传</a>
+					<div class="modal" tabindex="-1" role="dialog" v-bind:style="{ display: op === 'order' && photo ? 'block' : 'none' }" style="display: none;top: 100px;">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h4 class="modal-title">图片排序</h4>
+								</div>
+								<div class="modal-body">
+									<div class="input-group">
+										<select class="form-control" v-model="indexNew">
+											<option disabled value="">请选择图片排序</option>
+											<option v-for="(photo, index) in photos" v-bind:value="index">{{index + 1}}</option>
+										</select>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" @click="saveTaxis" class="btn btn-primary">保 存</button>
+									<button type="button" @click="close" class="btn btn-secondary" data-dismiss="modal">取 消</button>
+								</div>
 							</div>
-							<span id="img_upload_txt_0" style="clear:both; font-size:12px; color:#FF3737;"></span>
-							<input type="hidden" id="ID_0" name="ID_0" value="" />
-							<input type="hidden" id="SmallUrl_0" name="SmallUrl_0" value="" />
-							<input type="hidden" id="MiddleUrl_0" name="MiddleUrl_0" value="" />
-							<input type="hidden" id="LargeUrl_0" name="LargeUrl_0" value="" />
-						</td>
-						<td>
-							<table cellpadding=5>
-								<tr>
-									<td>图片说明:</td>
-									<td>
-										<textarea id="Description_0" name="Description_0" style="width: 350px; height:66px;"></textarea>
-									</td>
-								</tr>
-							</table>
-						</td>
-						<td style="vertical-align:bottom">
-							<a href="javascript:;" onClick="remove_form('#Photo_0');">删除图片</a>
-						</td>
-					</tr>
-				</table>
+						</div>
+					</div>
+					<div class="modal-backdrop show fade" v-bind:style="{ display: op && photo ? 'block' : 'none' }"></div>
+
+				</div>
 
 				<hr />
+				<asp:Button class="btn" id="Return" CausesValidation="false" OnClick="Return_OnClick" Text="返 回" runat="server" />
+
 			</div>
-
-			<script type="text/javascript">
-				var ajaxUploadUrl = '<%=GetContentPhotoUploadSingleUrl()%>';
-
-				function add_form(id, url, smallUrl, middleUrl, largeUrl, description) {
-					var $count = $('#Photo_Count');
-					var count = parseInt($count.val());
-					count = count + 1;
-					var $el = $("<div id='Photo_" + count + "'>" + $('#Photo_0').html().replace(/_0/g, '_' + count) + "</div>");
-					$el.insertBefore($count);
-					$('#Photo_Count').val(count);
-					add_ajaxUpload(count);
-
-					if (id && id > 0) {
-						$('#ID_' + count).val(id);
-						$('#imgPhoto_' + count).attr("src", url);
-						$('#SmallUrl_' + count).val(smallUrl);
-						$('#MiddleUrl_' + count).val(middleUrl);
-						$('#LargeUrl_' + count).val(largeUrl);
-						$('#Description_' + count).val(description);
-					}
-				}
-
-				function remove_form(divID) {
-					$(divID).remove();
-				}
-
-				function add_ajaxUpload(index) {
-					new AjaxUpload('uploadFile_' + index, {
-						action: ajaxUploadUrl,
-						name: "ImageUrl",
-						data: {},
-						onSubmit: function (file, ext) {
-							var reg = /^(jpg|jpeg|png|gif)$/i;
-							if (ext && reg.test(ext)) {
-								$('#img_upload_txt_' + index).text('上传中... ');
-							} else {
-								$('#img_upload_txt_' + index).text('只允许上传JPG,PNG,GIF图片');
-								return false;
-							}
-						},
-						onComplete: function (file, response) {
-							$('#img_upload_txt_' + index).text(' ');
-							if (response) {
-								response = eval("(" + response + ")");
-								if (response.success == 'true') {
-									$("#imgPhoto_" + index).attr('src', response.url);
-									$("#SmallUrl_" + index).val(response.smallUrl);
-									$("#MiddleUrl_" + index).val(response.middleUrl);
-									$("#LargeUrl_" + index).val(response.largeUrl);
-								} else {
-									$('#img_upload_txt_' + index).text(response.message);
-								}
-							}
-						}
-					});
-				}
-			</script>
-
-			<asp:Literal ID="LtlScript" runat="server"></asp:Literal>
 
 		</form>
 	</body>
 
 	</html>
+
+	<script type="text/javascript" src="assets/axios/axios.min.js"></script>
+	<script type="text/javascript" src="assets/vuejs/vue.min.js"></script>
+	<script type="text/javascript" src="assets/sweetalert/sweetalert.min.js"></script>
+	<script type="text/javascript" src="assets/web-uploader/js/Q.js"></script>
+	<script type="text/javascript" src="assets/web-uploader/js/Q.Uploader.js"></script>
+	<script type="text/javascript">
+		var data = {
+			op: '',
+			photo: null,
+			description: '',
+			indexOld: 0,
+			indexNew: 0,
+			photos: <%=Photos%>
+		};
+
+		var $vue = new Vue({
+			el: '#main',
+			data: data,
+			methods: {
+				upload: function (photo) {
+					this.photos.push(photo);
+				},
+				describe: function (photo) {
+					this.op = 'describe';
+					this.description = photo.description;
+					this.photo = photo;
+				},
+				order: function (photo, index) {
+					this.op = 'order';
+					this.indexOld = this.indexNew = index;
+					this.photo = photo;
+				},
+				close: function () {
+					this.photo = null;
+				},
+				saveDescription: function () {
+					var $this = this;
+					var description = this.description;
+					axios.post(location.href + '&isSaveDescription=True', {
+							photoId: $this.photo.id,
+							description: description
+						})
+						.then(function (response) {
+							$this.photo.description = description;
+							$this.op = '';
+							$this.photo = null;
+						})
+						.catch(function (error) {
+							console.log(error);
+						});
+				},
+				saveTaxis: function () {
+					var $this = this;
+					var indexOld = this.indexOld;
+					var indexNew = this.indexNew;
+
+					$this.op = '';
+
+					if (indexOld === indexNew) return;
+
+					$this.photos.splice(indexOld, 1);
+					$this.photos.splice(indexNew, 0, $this.photo);
+					$this.photo = null;
+
+					var photoIds = [];
+					for (var i = 0; i < $this.photos.length; i++) {
+						photoIds.push($this.photos[i].id);
+					}
+
+					axios.post(location.href + '&isSaveTaxis=True', {
+							photoIds: photoIds
+						})
+						.then(function (response) {})
+						.catch(function (error) {
+							console.log(error);
+						});
+				},
+				del: function (photo) {
+					var $this = this;
+
+					swal({
+							title: '删除图片',
+							text: '此操作将删除图片，确认吗？',
+							icon: 'warning',
+							buttons: {
+								cancel: {
+									text: '取 消',
+									visible: true,
+									className: 'btn'
+								},
+								confirm: {
+									text: '删 除',
+									visible: true,
+									className: 'btn btn-danger'
+								}
+							}
+						})
+						.then(function (isConfirm) {
+							if (isConfirm) {
+								axios.post(location.href + '&isDelete=True', {
+										photoId: photo.id
+									})
+									.then(function (response) {
+										$this.photos.splice($this.photos.indexOf(photo), 1);
+									})
+									.catch(function (error) {
+										console.log(error);
+									});
+							}
+						});
+				}
+			}
+		});
+
+		var E = Q.event,
+			Uploader = Q.Uploader;
+
+		var boxDropArea = document.getElementById("drop-area");
+
+		var uploader = new Uploader({
+			url: '<%=UploadUrl%>',
+			target: document.getElementById("drop-area"),
+			allows: ".jpg,.jpeg,.png,.gif,.bmp",
+			on: {
+				add: function (task) {
+					if (task.disabled) return alert("允许上传的文件格式为：" + this.ops.allows);
+				},
+				complete: function (task) {
+					var json = task.json;
+					if (!json || json.ret != 1) return alert("上传失败！");
+
+					$vue.upload(json);
+				}
+			}
+		});
+
+		function set_drag_drop() {
+			//若浏览器不支持html5上传，则禁止拖拽上传
+			if (!Uploader.support.html5 || !uploader.html5) {
+				boxDropArea.innerHTML = "点击选择上传图片";
+				return;
+			}
+
+			//阻止浏览器默认拖放行为
+			E.add(boxDropArea, "dragleave", E.stop);
+			E.add(boxDropArea, "dragenter", E.stop);
+			E.add(boxDropArea, "dragover", E.stop);
+
+			E.add(boxDropArea, "drop", function (e) {
+				E.stop(e);
+
+				//获取文件对象
+				var files = e.dataTransfer.files;
+
+				uploader.addList(files);
+			});
+		}
+
+		set_drag_drop();
+	</script>
