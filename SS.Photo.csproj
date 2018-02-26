@@ -39,8 +39,8 @@
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SiteServer.Plugin, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SiteServer.Plugin.1.3.0\lib\net45\SiteServer.Plugin.dll</HintPath>
+    <Reference Include="SiteServer.Plugin, Version=1.3.39.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SiteServer.Plugin.1.3.39-beta\lib\net45\SiteServer.Plugin.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\RegexUtils.cs" />
     <Compile Include="Core\Utils.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Model\ConfigInfo.cs" />
@@ -63,6 +64,8 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Pages\HandlerUpload.cs" />
+    <Compile Include="Parse\StlPhoto.cs" />
+    <Compile Include="Parse\StlPhotos.cs" />
     <Compile Include="Parse\StlSlide.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Provider\PhotoDao.cs" />

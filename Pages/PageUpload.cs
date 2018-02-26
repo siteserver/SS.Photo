@@ -9,16 +9,18 @@ namespace SS.Photo.Pages
     public class PageUpload : Page
     {
         private int _siteId;
+        private int _channelId;
         private int _contentId;
         private string _returnUrl;
 
-        public string UploadUrl => HandlerUpload.GetRedirectUrl(_siteId, _contentId);
+        public string UploadUrl => HandlerUpload.GetRedirectUrl(_siteId, _channelId, _contentId);
 
-        public string Photos => Utils.JsonSerialize(Main.PhotoDao.GetPhotoInfoList(_siteId, _contentId));
+        public string Photos => Utils.JsonSerialize(Main.PhotoDao.GetPhotoInfoList(_siteId, _channelId, _contentId));
 
         public void Page_Load(object sender, EventArgs e)
         {
             _siteId = Utils.ToInt(Request.QueryString["siteId"]);
+            _channelId = Utils.ToInt(Request.QueryString["channelId"]);
             _contentId = Utils.ToInt(Request.QueryString["contentId"]);
             _returnUrl = Request.QueryString["returnUrl"];
 

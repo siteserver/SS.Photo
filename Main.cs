@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Remoting.Contexts;
+﻿using System.Collections.Generic;
 using System.Web.UI.WebControls;
 using SiteServer.Plugin;
 using SS.Photo.Model;
 using SS.Photo.Pages;
+using SS.Photo.Parse;
 using SS.Photo.Provider;
 using Menu = SiteServer.Plugin.Menu;
 
@@ -35,7 +34,7 @@ namespace SS.Photo
             service
                 .AddSiteMenu(siteId => new Menu
                 {
-                    Text = "多图内容",
+                    Text = "内容相册",
                     IconClass = "ion-images",
                     Menus = new List<Menu>
                     {
@@ -48,24 +47,27 @@ namespace SS.Photo
                 })
                 .AddContentLink(new HyperLink
                 {
-                    Text = "内容图片",
+                    Text = "内容相册",
                     NavigateUrl = $"{nameof(PageUpload)}.aspx"
                 })
                 .AddDatabaseTable(PhotoDao.TableName, PhotoDao.Columns)
+                .AddStlElementParser(StlPhotos.ElementName, StlPhotos.Parse)
+                .AddStlElementParser(StlPhoto.ElementName, StlPhoto.Parse)
+                .AddStlElementParser(StlSlide.ElementName, StlSlide.Parse)
                 ;
 
             service.ContentTranslateCompleted += Service_ContentTranslateCompleted;
             service.ContentDeleteCompleted += Service_ContentDeleteCompleted;
         }
 
-        private void Service_ContentDeleteCompleted(object sender, ContentEventArgs e)
+        private static void Service_ContentDeleteCompleted(object sender, ContentEventArgs e)
         {
-            PhotoDao.Delete(e.SiteId, e.ContentId);
+            PhotoDao.Delete(e.SiteId, e.ChannelId, e.ContentId);
         }
 
         private void Service_ContentTranslateCompleted(object sender, ContentTranslateEventArgs e)
         {
-            var photoInfoList = PhotoDao.GetPhotoInfoList(e.SiteId, e.ContentId);
+            var photoInfoList = PhotoDao.GetPhotoInfoList(e.SiteId, e.ChannelId, e.ContentId);
             if (photoInfoList.Count <= 0) return;
 
             foreach (var photoInfo in photoInfoList)

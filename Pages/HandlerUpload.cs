@@ -11,11 +11,11 @@ namespace SS.Photo.Pages
 {
     public class HandlerUpload : IHttpHandler
     {
-        public static string GetRedirectUrl(int siteId, int contentId)
+        public static string GetRedirectUrl(int siteId, int channelId, int contentId)
         {
             return
                 Main.Instance.PluginApi.GetPluginUrl(
-                    $"{nameof(HandlerUpload)}.ashx?siteId={siteId}&contentId={contentId}");
+                    $"{nameof(HandlerUpload)}.ashx?siteId={siteId}&channelId={channelId}&contentId={contentId}");
         }
 
         public void ProcessRequest(HttpContext context)
@@ -23,6 +23,7 @@ namespace SS.Photo.Pages
             var request = context.Request;
 
             var siteId = Utils.ToInt(request["siteId"]);
+            var channelId = Utils.ToInt(request["channelId"]);
             var contentId = Utils.ToInt(request["contentId"]);
             var action = request["action"];
             var hash = request["hash"];
@@ -47,7 +48,7 @@ namespace SS.Photo.Pages
                     var filePath = Main.Instance.FilesApi.GetUploadFilePath(siteId, fileName);
                     file.SaveAs(filePath);
 
-                    photoInfo = InsertPhoto(filePath, siteId, contentId);
+                    photoInfo = InsertPhoto(filePath, siteId, channelId, contentId);
                 }
             }
             else
@@ -62,7 +63,7 @@ namespace SS.Photo.Pages
                 {
                     if (File.Exists(pathOk))
                     {
-                        photoInfo = InsertPhoto(pathOk, siteId, contentId);
+                        photoInfo = InsertPhoto(pathOk, siteId, channelId, contentId);
 
                         Finish(GetResponseJson(photoInfo));
                     }
@@ -99,7 +100,7 @@ namespace SS.Photo.Pages
             Finish(GetResponseJson(photoInfo));
         }
 
-        private static PhotoInfo InsertPhoto(string filePath, int siteId, int contentId)
+        private static PhotoInfo InsertPhoto(string filePath, int siteId, int channelId, int contentId)
         {
             var configInfo = Main.Instance.GetConfigInfo(siteId);
             var largeUrl = Main.Instance.FilesApi.GetSiteUrlByFilePath(filePath);
@@ -116,7 +117,7 @@ namespace SS.Photo.Pages
                 middleUrl = Resize(siteId, filePath, srcImage, configInfo.PhotoMiddleWidth);
             }
 
-            var photoInfo = new PhotoInfo(0, siteId, contentId, smallUrl, middleUrl, largeUrl, 0, string.Empty);
+            var photoInfo = new PhotoInfo(0, siteId, channelId, contentId, smallUrl, middleUrl, largeUrl, 0, string.Empty);
             photoInfo.Id = Main.PhotoDao.Insert(photoInfo);
             return photoInfo;
         }

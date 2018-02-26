@@ -2,12 +2,11 @@ namespace SS.Photo.Model
 {
     public class PhotoInfo
     {
-        public const string TableName = "ss_Photo";
-
         public PhotoInfo()
         {
             Id = 0;
             SiteId = 0;
+            ChannelId = 0;
             ContentId = 0;
             SmallUrl = string.Empty;
             MiddleUrl = string.Empty;
@@ -16,10 +15,11 @@ namespace SS.Photo.Model
             Description = string.Empty;
         }
 
-        public PhotoInfo(int id, int siteId, int contentId, string smallUrl, string middleUrl, string largeUrl, int taxis, string description)
+        public PhotoInfo(int id, int siteId, int channelId, int contentId, string smallUrl, string middleUrl, string largeUrl, int taxis, string description)
         {
             Id = id;
             SiteId = siteId;
+            ChannelId = channelId;
             ContentId = contentId;
             SmallUrl = smallUrl;
             MiddleUrl = middleUrl;
@@ -31,6 +31,8 @@ namespace SS.Photo.Model
         public int Id { get; set; }
 
         public int SiteId { get; set; }
+
+        public int ChannelId { get; set; }
 
         public int ContentId { get; set; }
 

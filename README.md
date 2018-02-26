@@ -1,2 +1,2 @@
 # SS.Photo
-SiteServer CMS 多图内容插件
+SiteServer CMS 内容相册插件

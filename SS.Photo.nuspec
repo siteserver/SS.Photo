@@ -3,14 +3,14 @@
   <metadata>
     <id>SS.Photo</id>
     <version>$version$</version>
-    <title>SiteServer CMS 多图内容插件</title>
+    <title>内容相册插件</title>
     <authors>SiteServer CMS</authors>
     <owners>siteserver</owners>
     <licenseUrl>https://github.com/siteserver/SS.Photo/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/siteserver/SS.Photo</projectUrl>
     <iconUrl>https://github.com/siteserver/SS.Photo/raw/master/logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>实现多图内容功能</description>
+    <description>实现内容相册功能</description>
     <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
     <copyright>Copyright 2018</copyright>
     <tags>SiteServer CMS Photo Plugin</tags>
