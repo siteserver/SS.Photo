@@ -13,9 +13,7 @@ namespace SS.Photo.Pages
     {
         public static string GetRedirectUrl(int siteId, int channelId, int contentId)
         {
-            return
-                Main.Instance.PluginApi.GetPluginUrl(
-                    $"{nameof(HandlerUpload)}.ashx?siteId={siteId}&channelId={channelId}&contentId={contentId}");
+            return $"{nameof(HandlerUpload)}.ashx?siteId={siteId}&channelId={channelId}&contentId={contentId}";
         }
 
         public void ProcessRequest(HttpContext context)
