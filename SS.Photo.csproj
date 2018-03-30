@@ -39,8 +39,8 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SiteServer.Plugin, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SiteServer.Plugin.1.4.0\lib\net45\SiteServer.Plugin.dll</HintPath>
+    <Reference Include="SiteServer.Plugin, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SiteServer.Plugin.1.5.0\lib\net45\SiteServer.Plugin.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -74,12 +74,18 @@
   <ItemGroup>
     <None Include="handlerUpload.ashx" />
     <None Include="packages.config" />
+    <None Include="SS.Photo.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\axios\axios.min.js" />
     <Content Include="assets\bootstrap\bootstrap.min.css" />
-    <Content Include="assets\js\jquery-1.9.1.min.js" />
-    <Content Include="assets\s.gif" />
+    <Content Include="assets\readme\photo.png" />
+    <Content Include="assets\readme\photo001.png" />
+    <Content Include="assets\readme\photo002.png" />
+    <Content Include="assets\readme\photo003.png" />
+    <Content Include="assets\readme\photo004.png" />
+    <Content Include="assets\readme\photo005.png" />
+    <Content Include="assets\readme\photo006.png" />
     <Content Include="assets\siteserver\siteserver.min.css" />
     <Content Include="assets\slide\fullscreen.swf" />
     <Content Include="assets\slide\images\arr_left.cur" />
@@ -93,6 +99,9 @@
     <Content Include="assets\slide\images\fullScreen2.png" />
     <Content Include="assets\slide\images\loading_01.gif" />
     <Content Include="assets\slide\images\unfcn_mj_01.png" />
+    <Content Include="assets\slide\js\jquery-1.9.1.min.js" />
+    <Content Include="assets\slide\js\swfobject.js" />
+    <Content Include="assets\slide\s.gif" />
     <Content Include="assets\slide\script.js" />
     <Content Include="assets\slide\style.css" />
     <Content Include="assets\slide\template.html" />
@@ -107,6 +116,7 @@
     <Content Include="assets\web-uploader\js\spark-md5.js" />
     <Content Include="assets\web-uploader\Q.Uploader.file.all.js" />
     <Content Include="assets\web-uploader\Q.Uploader.image.all.js" />
+    <Content Include="logo.svg" />
     <Content Include="pageSettings.aspx" />
     <Content Include="pageUpload.aspx" />
   </ItemGroup>
