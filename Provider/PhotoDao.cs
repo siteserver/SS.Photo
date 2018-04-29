@@ -211,7 +211,7 @@ FROM {TableName} WHERE {nameof(PhotoInfo.Id)} = {id}";
         {
             PhotoInfo photoInfo = null;
 
-            var sqlString = _helper.ToTopSqlString(TableName, $"{nameof(PhotoInfo.Id)}, {nameof(PhotoInfo.SiteId)}, {nameof(PhotoInfo.ChannelId)}, {nameof(PhotoInfo.ContentId)}, {nameof(PhotoInfo.SmallUrl)}, {nameof(PhotoInfo.MiddleUrl)}, {nameof(PhotoInfo.LargeUrl)}, {nameof(PhotoInfo.Taxis)}, {nameof(PhotoInfo.Description)}", $"WHERE {nameof(PhotoInfo.SiteId)} = {siteId} AND {nameof(PhotoInfo.ChannelId)} = {channelId} AND {nameof(PhotoInfo.ContentId)} = {contentId}", $"ORDER BY {nameof(PhotoInfo.Taxis)}", 1);
+            var sqlString = _helper.GetPageSqlString(TableName, $"{nameof(PhotoInfo.Id)}, {nameof(PhotoInfo.SiteId)}, {nameof(PhotoInfo.ChannelId)}, {nameof(PhotoInfo.ContentId)}, {nameof(PhotoInfo.SmallUrl)}, {nameof(PhotoInfo.MiddleUrl)}, {nameof(PhotoInfo.LargeUrl)}, {nameof(PhotoInfo.Taxis)}, {nameof(PhotoInfo.Description)}", $"WHERE {nameof(PhotoInfo.SiteId)} = {siteId} AND {nameof(PhotoInfo.ChannelId)} = {channelId} AND {nameof(PhotoInfo.ContentId)} = {contentId}", $"ORDER BY {nameof(PhotoInfo.Taxis)}", 0, 1);
 
             using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
             {
@@ -318,10 +318,10 @@ FROM {TableName} WHERE {nameof(PhotoInfo.Id)} = {id}";
         public int GetSiblingContentId(string tableName, int channelId, int taxis, bool isNextContent)
         {
             var contentId = 0;
-            var sqlString = _helper.ToTopSqlString(tableName, nameof(IContentInfo.Id), $"WHERE ({nameof(IContentInfo.ChannelId)} = {channelId} AND {nameof(IContentInfo.Taxis)} > {taxis} AND {nameof(IContentInfo.IsChecked)} = '{true}')", $"ORDER BY {nameof(IContentInfo.Taxis)}", 1);
+            var sqlString = _helper.GetPageSqlString(tableName, nameof(IContentInfo.Id), $"WHERE ({nameof(IContentInfo.ChannelId)} = {channelId} AND {nameof(IContentInfo.Taxis)} > {taxis} AND {nameof(IContentInfo.IsChecked)} = '{true}')", $"ORDER BY {nameof(IContentInfo.Taxis)}", 0, 1);
             if (isNextContent)
             {
-                sqlString = _helper.ToTopSqlString(tableName, nameof(IContentInfo.Id), $"WHERE ({nameof(IContentInfo.ChannelId)} = {channelId} AND {nameof(IContentInfo.Taxis)} < {taxis} AND {nameof(IContentInfo.IsChecked)} = '{true}')", $"ORDER BY {nameof(IContentInfo.Taxis)} DESC", 1);
+                sqlString = _helper.GetPageSqlString(tableName, nameof(IContentInfo.Id), $"WHERE ({nameof(IContentInfo.ChannelId)} = {channelId} AND {nameof(IContentInfo.Taxis)} < {taxis} AND {nameof(IContentInfo.IsChecked)} = '{true}')", $"ORDER BY {nameof(IContentInfo.Taxis)} DESC", 0, 1);
             }
 
             using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
