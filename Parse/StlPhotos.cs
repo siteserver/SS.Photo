@@ -84,7 +84,7 @@ namespace SS.Photo.Parse
             foreach (var photoInfo in photoInfoList)
             {
                 StlPhoto.SetContextItem(context, photoInfo, itemIndex++);
-                parsedContent += Main.Instance.ParseApi.ParseInnerXml(context.StlInnerXml, context);
+                parsedContent += Main.Instance.ParseApi.Parse(context.StlInnerHtml, context);
             }
 
             return parsedContent;
