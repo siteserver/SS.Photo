@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Specialized;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -84,7 +84,7 @@ namespace SS.Photo.Parse
             var isUpper = false;
             var type = string.Empty;
 
-            foreach (var name in context.StlAttributes.Keys)
+            foreach (var name in context.StlAttributes.AllKeys)
             {
                 var attributeName = name.ToLower();
                 var value = context.StlAttributes[name];
@@ -195,15 +195,15 @@ namespace SS.Photo.Parse
                 }
                 else if (Utils.StartsWithIgnoreCase(type, TypeSmallUrl))
                 {
-                    parsedContent = GetImageHtml(photoInfo.SmallUrl, context.StlAttributes, context.IsStlEntity);
+                    parsedContent = GetImageHtml(photoInfo.SmallUrl, context.StlAttributes, context.IsStlElement);
                 }
                 else if (Utils.StartsWithIgnoreCase(type, TypeMiddleUrl))
                 {
-                    parsedContent = GetImageHtml(photoInfo.MiddleUrl, context.StlAttributes, context.IsStlEntity);
+                    parsedContent = GetImageHtml(photoInfo.MiddleUrl, context.StlAttributes, context.IsStlElement);
                 }
                 else if (Utils.StartsWithIgnoreCase(type, TypeLargeUrl))
                 {
-                    parsedContent = GetImageHtml(photoInfo.LargeUrl, context.StlAttributes, context.IsStlEntity);
+                    parsedContent = GetImageHtml(photoInfo.LargeUrl, context.StlAttributes, context.IsStlElement);
                 }
                 else if (Utils.StartsWithIgnoreCase(type, TypeDescription) || Utils.StartsWithIgnoreCase(type, "content"))
                 {
@@ -224,13 +224,13 @@ namespace SS.Photo.Parse
             return parsedContent;
         }
 
-        public static string GetImageHtml(string imageUrl, Dictionary<string, string> attributes, bool isStlEntity)
+        public static string GetImageHtml(string imageUrl, NameValueCollection attributes, bool isStlElement)
         {
             if (string.IsNullOrEmpty(imageUrl)) return string.Empty;
 
             string retval;
 
-            if (isStlEntity)
+            if (!isStlElement)
             {
                 retval = imageUrl;
             }
@@ -244,11 +244,11 @@ namespace SS.Photo.Parse
             return retval;
         }
 
-        public static void AddAttributesIfNotExists(IAttributeAccessor accessor, Dictionary<string, string> attributes)
+        public static void AddAttributesIfNotExists(IAttributeAccessor accessor, NameValueCollection attributes)
         {
             if (accessor == null || attributes == null) return;
 
-            foreach (var key in attributes.Keys)
+            foreach (var key in attributes.AllKeys)
             {
                 if (accessor.GetAttribute(key) == null)
                 {

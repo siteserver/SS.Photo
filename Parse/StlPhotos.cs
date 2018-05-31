@@ -23,7 +23,7 @@ namespace SS.Photo.Parse
             var order = string.Empty;
             var where = string.Empty;
 
-            foreach (var name in context.StlAttributes.Keys)
+            foreach (var name in context.StlAttributes.AllKeys)
             {
                 var value = context.StlAttributes[name];
 
