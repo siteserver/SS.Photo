@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Web.UI.WebControls;
 using SiteServer.Plugin;
 using SS.Photo.Model;
 using SS.Photo.Pages;
@@ -45,10 +44,10 @@ namespace SS.Photo
                         }
                     }
                 })
-                .AddContentLink(new HyperLink
+                .AddContentMenu(new Menu
                 {
                     Text = "内容相册",
-                    NavigateUrl = $"{nameof(PageUpload)}.aspx"
+                    Href = $"{nameof(PageUpload)}.aspx"
                 })
                 .AddDatabaseTable(PhotoDao.TableName, PhotoDao.Columns)
                 .AddStlElementParser(StlPhotos.ElementName, StlPhotos.Parse)

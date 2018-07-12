@@ -61,10 +61,5 @@ namespace SS.Photo.Pages
                 HttpContext.Current.Response.End();
             }
         }
-
-        public void Return_OnClick(object sender, EventArgs e)
-        {
-            HttpContext.Current.Response.Redirect(_returnUrl);
-        }
     }
 }

@@ -99,8 +99,10 @@
 				</div>
 
 				<hr />
-				<asp:Button class="btn" id="Return" CausesValidation="false" OnClick="Return_OnClick" Text="返 回" runat="server" />
 
+				<div class="text-right">
+					<input type="button" value="关 闭" onClick="window.parent.layer.closeAll()" class="btn" />
+				</div>
 			</div>
 
 		</form>
