@@ -24,7 +24,7 @@ namespace SS.Photo.Pages
             _contentId = Utils.ToInt(Request.QueryString["contentId"]);
             _returnUrl = Request.QueryString["returnUrl"];
 
-            if (!Main.Instance.AdminApi.IsSiteAuthorized(_siteId))
+            if (!Main.Instance.AdminApi.HasSitePermissions(_siteId, Main.Instance.Id))
             {
                 HttpContext.Current.Response.Write("<h1>未授权访问</h1>");
                 HttpContext.Current.Response.End();
