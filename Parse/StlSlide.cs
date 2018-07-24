@@ -73,7 +73,7 @@ var slide_data = {
             {
                 var title = Main.Instance.ContentApi.GetContentValue(context.SiteId, contentInfo.ChannelId,
                     siblingContentId, nameof(IContentInfo.Title));
-                var url = Main.Instance.FilesApi.GetContentUrl(context.SiteId, contentInfo.ChannelId, siblingContentId);
+                var url = Main.Instance.ContentApi.GetContentUrl(context.SiteId, contentInfo.ChannelId, siblingContentId);
                 var photoInfo = Main.PhotoDao.GetFirstPhotoInfo(context.SiteId, contentInfo.ChannelId, siblingContentId);
                 var previewUrl = photoInfo != null ? photoInfo.SmallUrl : sGifUrl;
                 builder.Append($@"""next_album"":{{""title"":""{Utils.ToJsString(title)}"",""url"":""{Utils.ToJsString(url)}"",""previewUrl"":""{Utils
@@ -92,7 +92,7 @@ var slide_data = {
             {
                 var title = Main.Instance.ContentApi.GetContentValue(context.SiteId, contentInfo.ChannelId,
                     siblingContentId, nameof(IContentInfo.Title));
-                var url = Main.Instance.FilesApi.GetContentUrl(context.SiteId, contentInfo.ChannelId, siblingContentId);
+                var url = Main.Instance.ContentApi.GetContentUrl(context.SiteId, contentInfo.ChannelId, siblingContentId);
                 var photoInfo = Main.PhotoDao.GetFirstPhotoInfo(context.SiteId, contentInfo.ChannelId, siblingContentId);
                 var previewUrl = photoInfo != null ? photoInfo.SmallUrl : sGifUrl;
                 builder.Append($@"""prev_album"":{{""title"":""{Utils.ToJsString(title)}"",""url"":""{Utils.ToJsString(url)}"",""previewUrl"":""{Utils.ToJsString(previewUrl)}""}}");

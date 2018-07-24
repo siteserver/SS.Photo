@@ -43,7 +43,7 @@ namespace SS.Photo.Pages
 
                     if (string.IsNullOrEmpty(fileName)) fileName = Path.GetFileName(file.FileName);
 
-                    var filePath = Main.Instance.FilesApi.GetUploadFilePath(siteId, fileName);
+                    var filePath = Main.Instance.UtilsApi.GetUploadFilePath(siteId, fileName);
                     file.SaveAs(filePath);
 
                     photoInfo = InsertPhoto(filePath, siteId, channelId, contentId);
@@ -53,7 +53,7 @@ namespace SS.Photo.Pages
             {
                 //秒传或断点续传
                 //var path = context.Server.MapPath("~/upload/" + hash);
-                var path = Main.Instance.FilesApi.GetUploadFilePath(siteId, hash);
+                var path = Main.Instance.UtilsApi.GetUploadFilePath(siteId, hash);
                 var pathOk = path + Path.GetExtension(fileName);
 
                 //状态查询
@@ -101,7 +101,7 @@ namespace SS.Photo.Pages
         private static PhotoInfo InsertPhoto(string filePath, int siteId, int channelId, int contentId)
         {
             var configInfo = Main.Instance.GetConfigInfo(siteId);
-            var largeUrl = Main.Instance.FilesApi.GetSiteUrlByFilePath(filePath);
+            var largeUrl = Main.Instance.SiteApi.GetSiteUrlByFilePath(filePath);
             var smallUrl = largeUrl;
             var middleUrl = largeUrl;
 
@@ -136,10 +136,10 @@ namespace SS.Photo.Pages
             }
 
             var resizeFileName = $"{Path.GetFileNameWithoutExtension(filePath)}_{maxWidth}.png";
-            var resizeFilePath = Main.Instance.FilesApi.GetUploadFilePath(siteId, resizeFileName);
+            var resizeFilePath = Main.Instance.UtilsApi.GetUploadFilePath(siteId, resizeFileName);
             newImage.Save(resizeFilePath, ImageFormat.Png);
 
-            return Main.Instance.FilesApi.GetSiteUrlByFilePath(resizeFilePath);
+            return Main.Instance.SiteApi.GetSiteUrlByFilePath(resizeFilePath);
         }
 
         /// <summary>

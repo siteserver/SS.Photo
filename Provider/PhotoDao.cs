@@ -63,12 +63,12 @@ namespace SS.Photo.Provider
         };
 
         private readonly string _connectionString;
-        private readonly IDataApi _helper;
+        private readonly IDatabaseApi _helper;
 
         public PhotoDao()
         {
             _connectionString = Main.Instance.ConnectionString;
-            _helper = Main.Instance.DataApi;
+            _helper = Main.Instance.DatabaseApi;
         }
 
         private static readonly string ParmId = $"@{nameof(PhotoInfo.Id)}";
@@ -230,7 +230,7 @@ FROM {TableName} WHERE {nameof(PhotoInfo.Id)} = {id}";
             var sqlString =
                 $"SELECT Count(*) FROM {TableName} WHERE {nameof(PhotoInfo.SiteId)} = {siteId} AND {nameof(PhotoInfo.ChannelId)} = {channelId} AND {nameof(PhotoInfo.ContentId)} = {contentId}";
 
-            return _helper.ExecuteInt(_connectionString, sqlString);
+            return (int)_helper.ExecuteScalar(_connectionString, sqlString);
         }
 
         public List<int> GetPhotoContentIdList(int siteId, int channelId, int contentId)

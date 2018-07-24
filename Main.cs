@@ -74,7 +74,7 @@ namespace SS.Photo
                 photoInfo.SiteId = e.TargetSiteId;
                 photoInfo.ContentId = e.TargetContentId;
 
-                FilesApi.MoveFiles(e.SiteId, e.TargetSiteId, new List<string>
+                UtilsApi.MoveFiles(e.SiteId, e.TargetSiteId, new List<string>
                 {
                     photoInfo.SmallUrl,
                     photoInfo.MiddleUrl,

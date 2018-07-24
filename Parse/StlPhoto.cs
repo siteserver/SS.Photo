@@ -37,32 +37,14 @@ namespace SS.Photo.Parse
 
         public static void SetContextItem(IParseContext context, PhotoInfo photoInfo, int itemIndex)
         {
-            context.StlItems[ElementName] = photoInfo;
-            context.StlItems[ElementName + "ItemIndex"] = itemIndex;
+            context.Set(ElementName, photoInfo);
+            context.Set(ElementName + "ItemIndex", itemIndex);
         }
 
         private static bool TryGetContextItem(IParseContext context, out PhotoInfo photoInfo, out int itemIndex)
         {
-            photoInfo = null;
-            itemIndex = 0;
-
-            if (!context.StlItems.ContainsKey(ElementName) || !context.StlItems.ContainsKey(ElementName + "ItemIndex"))
-            {
-                return false;
-            }
-
-            try
-            {
-                object obj;
-                context.StlItems.TryGetValue(ElementName, out obj);
-                photoInfo = obj as PhotoInfo;
-                context.StlItems.TryGetValue(ElementName + "ItemIndex", out obj);
-                if (obj != null) itemIndex = (int)obj;
-            }
-            catch
-            {
-                return false;
-            }
+            photoInfo = context.Get<PhotoInfo>(ElementName);
+            itemIndex = context.Get<int>(ElementName + "ItemIndex");
 
             return photoInfo != null && itemIndex > 0;
         }
