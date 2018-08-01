@@ -230,7 +230,7 @@ FROM {TableName} WHERE {nameof(PhotoInfo.Id)} = {id}";
             var sqlString =
                 $"SELECT Count(*) FROM {TableName} WHERE {nameof(PhotoInfo.SiteId)} = {siteId} AND {nameof(PhotoInfo.ChannelId)} = {channelId} AND {nameof(PhotoInfo.ContentId)} = {contentId}";
 
-            return (int)_helper.ExecuteScalar(_connectionString, sqlString);
+            return Main.Dao.GetIntResult(sqlString);
         }
 
         public List<int> GetPhotoContentIdList(int siteId, int channelId, int contentId)

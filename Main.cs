@@ -10,6 +10,7 @@ namespace SS.Photo
 {
     public class Main : PluginBase
     {
+        public static Dao Dao { get; private set; }
         public static PhotoDao PhotoDao { get; private set; }
 
         private static readonly Dictionary<int, ConfigInfo> ConfigInfoDict = new Dictionary<int, ConfigInfo>();
@@ -28,6 +29,8 @@ namespace SS.Photo
         public override void Startup(IService service)
         {
             Instance = this;
+
+            Dao = new Dao();
             PhotoDao = new PhotoDao();
 
             service

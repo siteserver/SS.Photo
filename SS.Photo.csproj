@@ -68,6 +68,7 @@
     <Compile Include="Parse\StlPhotos.cs" />
     <Compile Include="Parse\StlSlide.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Provider\Dao.cs" />
     <Compile Include="Provider\PhotoDao.cs" />
     <Compile Include="Model\PhotoInfo.cs" />
   </ItemGroup>
