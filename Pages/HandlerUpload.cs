@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using SiteServer.Plugin;
+using SS.Photo.Provider;
 
 namespace SS.Photo.Pages
 {
@@ -117,7 +118,7 @@ namespace SS.Photo.Pages
             }
 
             var photoInfo = new PhotoInfo(0, siteId, channelId, contentId, smallUrl, middleUrl, largeUrl, 0, string.Empty);
-            photoInfo.Id = Main.PhotoDao.Insert(photoInfo);
+            photoInfo.Id = PhotoDao.Insert(photoInfo);
             return photoInfo;
         }
 

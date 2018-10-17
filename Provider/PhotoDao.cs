@@ -5,11 +5,11 @@ using SS.Photo.Model;
 
 namespace SS.Photo.Provider
 {
-    public class PhotoDao
+    public static class PhotoDao
     {
         public const string TableName = "ss_Photo";
 
-        public List<TableColumn> Columns => new List<TableColumn>
+        public static List<TableColumn> Columns => new List<TableColumn>
         {
             new TableColumn
             {
@@ -62,15 +62,6 @@ namespace SS.Photo.Provider
             }
         };
 
-        private readonly string _connectionString;
-        private readonly IDatabaseApi _helper;
-
-        public PhotoDao()
-        {
-            _connectionString = Context.ConnectionString;
-            _helper = Context.DatabaseApi;
-        }
-
         private static readonly string ParmId = $"@{nameof(PhotoInfo.Id)}";
         private static readonly string ParmSiteId = $"@{nameof(PhotoInfo.SiteId)}";
         private static readonly string ParmChannelId = $"@{nameof(PhotoInfo.ChannelId)}";
@@ -81,7 +72,7 @@ namespace SS.Photo.Provider
         private static readonly string ParmTaxis = $"@{nameof(PhotoInfo.Taxis)}";
         private static readonly string ParmDescription = $"@{nameof(PhotoInfo.Description)}";
 
-        public int Insert(PhotoInfo photoInfo)
+        public static int Insert(PhotoInfo photoInfo)
         {
             var maxTaxis = GetMaxTaxis(photoInfo.SiteId, photoInfo.ChannelId, photoInfo.ContentId);
             photoInfo.Taxis = maxTaxis + 1;
@@ -109,31 +100,31 @@ namespace SS.Photo.Provider
 
             var parms = new[]
             {
-                _helper.GetParameter(ParmSiteId, photoInfo.SiteId),
-                _helper.GetParameter(ParmChannelId, photoInfo.ChannelId),
-                _helper.GetParameter(ParmContentId, photoInfo.ContentId),
-                _helper.GetParameter(ParmSmallUrl, photoInfo.SmallUrl),
-                _helper.GetParameter(ParmMiddleUrl, photoInfo.MiddleUrl),
-                _helper.GetParameter(ParmLargeUrl, photoInfo.LargeUrl),
-                _helper.GetParameter(ParmTaxis, photoInfo.Taxis),
-                _helper.GetParameter(ParmDescription, photoInfo.Description)
+                Context.DatabaseApi.GetParameter(ParmSiteId, photoInfo.SiteId),
+                Context.DatabaseApi.GetParameter(ParmChannelId, photoInfo.ChannelId),
+                Context.DatabaseApi.GetParameter(ParmContentId, photoInfo.ContentId),
+                Context.DatabaseApi.GetParameter(ParmSmallUrl, photoInfo.SmallUrl),
+                Context.DatabaseApi.GetParameter(ParmMiddleUrl, photoInfo.MiddleUrl),
+                Context.DatabaseApi.GetParameter(ParmLargeUrl, photoInfo.LargeUrl),
+                Context.DatabaseApi.GetParameter(ParmTaxis, photoInfo.Taxis),
+                Context.DatabaseApi.GetParameter(ParmDescription, photoInfo.Description)
             };
 
-            return _helper.ExecuteNonQueryAndReturnId(TableName, nameof(PhotoInfo.Id), _connectionString, sqlString, parms);
+            return Context.DatabaseApi.ExecuteNonQueryAndReturnId(TableName, nameof(PhotoInfo.Id), Context.ConnectionString, sqlString, parms);
         }
 
-        public void UpdateDescription(int photoId, string description)
+        public static void UpdateDescription(int photoId, string description)
         {
             var parameters = new[]
             {
-                _helper.GetParameter(nameof(PhotoInfo.Description), description),
-                _helper.GetParameter(nameof(PhotoInfo.Id), photoId)
+                Context.DatabaseApi.GetParameter(nameof(PhotoInfo.Description), description),
+                Context.DatabaseApi.GetParameter(nameof(PhotoInfo.Id), photoId)
             };
 
-            _helper.ExecuteNonQuery(_connectionString, $"UPDATE {TableName} SET {nameof(PhotoInfo.Description)} = @{nameof(PhotoInfo.Description)} WHERE {nameof(PhotoInfo.Id)} = @{nameof(PhotoInfo.Id)}", parameters);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, $"UPDATE {TableName} SET {nameof(PhotoInfo.Description)} = @{nameof(PhotoInfo.Description)} WHERE {nameof(PhotoInfo.Id)} = @{nameof(PhotoInfo.Id)}", parameters);
         }
 
-        public void UpdateTaxis(List<int> photoIds)
+        public static void UpdateTaxis(List<int> photoIds)
         {
             var taxis = 1;
             foreach (var photoId in photoIds)
@@ -143,43 +134,43 @@ namespace SS.Photo.Provider
             }
         }
 
-        public void Delete(int id)
+        public static void Delete(int id)
         {
             var sqlString = $"DELETE FROM {TableName} WHERE {nameof(PhotoInfo.Id)} = @{nameof(PhotoInfo.Id)}";
 
             var parms = new[]
             {
-                _helper.GetParameter(ParmId, id)
+                Context.DatabaseApi.GetParameter(ParmId, id)
             };
 
-            _helper.ExecuteNonQuery(_connectionString, sqlString, parms);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString, parms);
         }
 
-        public void Delete(List<int> idList)
+        public static void Delete(List<int> idList)
         {
             if (idList == null || idList.Count <= 0) return;
 
             var sqlString =
                 $"DELETE FROM {TableName} WHERE {nameof(PhotoInfo.Id)} IN ({string.Join(",", idList)})";
-            _helper.ExecuteNonQuery(_connectionString, sqlString);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString);
         }
 
-        public void Delete(int siteId, int channelId, int contentId)
+        public static void Delete(int siteId, int channelId, int contentId)
         {
             var sqlString =
                 $"DELETE FROM {TableName} WHERE {nameof(PhotoInfo.SiteId)} = @{nameof(PhotoInfo.SiteId)} AND {nameof(PhotoInfo.ChannelId)} = @{nameof(PhotoInfo.ChannelId)} AND {nameof(PhotoInfo.ContentId)} = @{nameof(PhotoInfo.ContentId)}";
 
             var parms = new[]
             {
-                _helper.GetParameter(ParmSiteId, siteId),
-                _helper.GetParameter(ParmChannelId, channelId),
-                _helper.GetParameter(ParmContentId, contentId)
+                Context.DatabaseApi.GetParameter(ParmSiteId, siteId),
+                Context.DatabaseApi.GetParameter(ParmChannelId, channelId),
+                Context.DatabaseApi.GetParameter(ParmContentId, contentId)
             };
 
-            _helper.ExecuteNonQuery(_connectionString, sqlString, parms);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString, parms);
         }
 
-        public PhotoInfo GetPhotoInfo(int id)
+        public static PhotoInfo GetPhotoInfo(int id)
         {
             PhotoInfo photoInfo = null;
 
@@ -195,7 +186,7 @@ namespace SS.Photo.Provider
     {nameof(PhotoInfo.Description)}
 FROM {TableName} WHERE {nameof(PhotoInfo.Id)} = {id}";
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 if (rdr.Read())
                 {
@@ -207,13 +198,13 @@ FROM {TableName} WHERE {nameof(PhotoInfo.Id)} = {id}";
             return photoInfo;
         }
 
-        public PhotoInfo GetFirstPhotoInfo(int siteId, int channelId, int contentId)
+        public static PhotoInfo GetFirstPhotoInfo(int siteId, int channelId, int contentId)
         {
             PhotoInfo photoInfo = null;
 
-            var sqlString = _helper.GetPageSqlString(TableName, $"{nameof(PhotoInfo.Id)}, {nameof(PhotoInfo.SiteId)}, {nameof(PhotoInfo.ChannelId)}, {nameof(PhotoInfo.ContentId)}, {nameof(PhotoInfo.SmallUrl)}, {nameof(PhotoInfo.MiddleUrl)}, {nameof(PhotoInfo.LargeUrl)}, {nameof(PhotoInfo.Taxis)}, {nameof(PhotoInfo.Description)}", $"WHERE {nameof(PhotoInfo.SiteId)} = {siteId} AND {nameof(PhotoInfo.ChannelId)} = {channelId} AND {nameof(PhotoInfo.ContentId)} = {contentId}", $"ORDER BY {nameof(PhotoInfo.Taxis)}", 0, 1);
+            var sqlString = Context.DatabaseApi.GetPageSqlString(TableName, $"{nameof(PhotoInfo.Id)}, {nameof(PhotoInfo.SiteId)}, {nameof(PhotoInfo.ChannelId)}, {nameof(PhotoInfo.ContentId)}, {nameof(PhotoInfo.SmallUrl)}, {nameof(PhotoInfo.MiddleUrl)}, {nameof(PhotoInfo.LargeUrl)}, {nameof(PhotoInfo.Taxis)}, {nameof(PhotoInfo.Description)}", $"WHERE {nameof(PhotoInfo.SiteId)} = {siteId} AND {nameof(PhotoInfo.ChannelId)} = {channelId} AND {nameof(PhotoInfo.ContentId)} = {contentId}", $"ORDER BY {nameof(PhotoInfo.Taxis)}", 0, 1);
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 if (rdr.Read())
                 {
@@ -225,22 +216,22 @@ FROM {TableName} WHERE {nameof(PhotoInfo.Id)} = {id}";
             return photoInfo;
         }
 
-        public int GetCount(int siteId, int channelId, int contentId)
+        public static int GetCount(int siteId, int channelId, int contentId)
         {
             var sqlString =
                 $"SELECT Count(*) FROM {TableName} WHERE {nameof(PhotoInfo.SiteId)} = {siteId} AND {nameof(PhotoInfo.ChannelId)} = {channelId} AND {nameof(PhotoInfo.ContentId)} = {contentId}";
 
-            return Main.Dao.GetIntResult(sqlString);
+            return Dao.GetIntResult(sqlString);
         }
 
-        public List<int> GetPhotoContentIdList(int siteId, int channelId, int contentId)
+        public static List<int> GetPhotoContentIdList(int siteId, int channelId, int contentId)
         {
             var list = new List<int>();
 
             string sqlString =
                 $"SELECT {nameof(PhotoInfo.Id)} FROM {TableName} WHERE {nameof(PhotoInfo.SiteId)} = {siteId} AND {nameof(PhotoInfo.ChannelId)} = {channelId} AND {nameof(PhotoInfo.ContentId)} = {contentId} ORDER BY {nameof(PhotoInfo.Taxis)}";
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 while (rdr.Read())
                 {
@@ -252,14 +243,14 @@ FROM {TableName} WHERE {nameof(PhotoInfo.Id)} = {id}";
             return list;
         }
 
-        public List<PhotoInfo> GetPhotoInfoList(int siteId, int channelId, int contentId)
+        public static List<PhotoInfo> GetPhotoInfoList(int siteId, int channelId, int contentId)
         {
             var list = new List<PhotoInfo>();
 
             string sqlString =
                 $"SELECT {nameof(PhotoInfo.Id)}, {nameof(PhotoInfo.SiteId)}, {nameof(PhotoInfo.ChannelId)}, {nameof(PhotoInfo.ContentId)}, {nameof(PhotoInfo.SmallUrl)}, {nameof(PhotoInfo.MiddleUrl)}, {nameof(PhotoInfo.LargeUrl)}, {nameof(PhotoInfo.Taxis)}, {nameof(PhotoInfo.Description)} FROM {TableName} WHERE {nameof(PhotoInfo.SiteId)} = {siteId} AND {nameof(PhotoInfo.ChannelId)} = {channelId} AND {nameof(PhotoInfo.ContentId)} = {contentId} ORDER BY {nameof(PhotoInfo.Taxis)}";
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 while (rdr.Read())
                 {
@@ -271,19 +262,19 @@ FROM {TableName} WHERE {nameof(PhotoInfo.Id)} = {id}";
             return list;
         }
 
-        private void SetTaxis(int id, int taxis)
+        private static void SetTaxis(int id, int taxis)
         {
             string sqlString = $"UPDATE {TableName} SET {nameof(PhotoInfo.Taxis)} = {taxis} WHERE {nameof(PhotoInfo.Id)} = {id}";
-            _helper.ExecuteNonQuery(_connectionString, sqlString);
+            Context.DatabaseApi.ExecuteNonQuery(Context.ConnectionString, sqlString);
         }
 
-        private int GetMaxTaxis(int siteId, int channelId, int contentId)
+        private static int GetMaxTaxis(int siteId, int channelId, int contentId)
         {
             string sqlString =
                 $"SELECT MAX({nameof(PhotoInfo.Taxis)}) FROM {TableName} WHERE {nameof(PhotoInfo.SiteId)} = {siteId} AND {nameof(PhotoInfo.ChannelId)} = {channelId} AND {nameof(PhotoInfo.ContentId)} = {contentId}";
             var maxTaxis = 0;
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 if (rdr.Read() && !rdr.IsDBNull(0))
                 {
@@ -294,41 +285,41 @@ FROM {TableName} WHERE {nameof(PhotoInfo.Id)} = {id}";
             return maxTaxis;
         }
 
-        private PhotoInfo GetPhotoInfo(IDataReader rdr)
+        private static PhotoInfo GetPhotoInfo(IDataReader rdr)
         {
             if (rdr == null) return null;
 
             var i = 0;
             var photoInfo = new PhotoInfo
             {
-                Id = _helper.GetInt(rdr, i++),
-                SiteId = _helper.GetInt(rdr, i++),
-                ChannelId = _helper.GetInt(rdr, i++),
-                ContentId = _helper.GetInt(rdr, i++),
-                SmallUrl = _helper.GetString(rdr, i++),
-                MiddleUrl = _helper.GetString(rdr, i++),
-                LargeUrl = _helper.GetString(rdr, i++),
-                Taxis = _helper.GetInt(rdr, i++),
-                Description = _helper.GetString(rdr, i)
+                Id = Context.DatabaseApi.GetInt(rdr, i++),
+                SiteId = Context.DatabaseApi.GetInt(rdr, i++),
+                ChannelId = Context.DatabaseApi.GetInt(rdr, i++),
+                ContentId = Context.DatabaseApi.GetInt(rdr, i++),
+                SmallUrl = Context.DatabaseApi.GetString(rdr, i++),
+                MiddleUrl = Context.DatabaseApi.GetString(rdr, i++),
+                LargeUrl = Context.DatabaseApi.GetString(rdr, i++),
+                Taxis = Context.DatabaseApi.GetInt(rdr, i++),
+                Description = Context.DatabaseApi.GetString(rdr, i)
             };
 
             return photoInfo;
         }
 
-        public int GetSiblingContentId(string tableName, int channelId, int taxis, bool isNextContent)
+        public static int GetSiblingContentId(string tableName, int channelId, int taxis, bool isNextContent)
         {
             var contentId = 0;
-            var sqlString = _helper.GetPageSqlString(tableName, nameof(IContentInfo.Id), $"WHERE ({nameof(IContentInfo.ChannelId)} = {channelId} AND {nameof(IContentInfo.Taxis)} > {taxis} AND {nameof(IContentInfo.IsChecked)} = '{true}')", $"ORDER BY {nameof(IContentInfo.Taxis)}", 0, 1);
+            var sqlString = Context.DatabaseApi.GetPageSqlString(tableName, nameof(IContentInfo.Id), $"WHERE ({nameof(IContentInfo.ChannelId)} = {channelId} AND {nameof(IContentInfo.Taxis)} > {taxis} AND {nameof(IContentInfo.IsChecked)} = '{true}')", $"ORDER BY {nameof(IContentInfo.Taxis)}", 0, 1);
             if (isNextContent)
             {
-                sqlString = _helper.GetPageSqlString(tableName, nameof(IContentInfo.Id), $"WHERE ({nameof(IContentInfo.ChannelId)} = {channelId} AND {nameof(IContentInfo.Taxis)} < {taxis} AND {nameof(IContentInfo.IsChecked)} = '{true}')", $"ORDER BY {nameof(IContentInfo.Taxis)} DESC", 0, 1);
+                sqlString = Context.DatabaseApi.GetPageSqlString(tableName, nameof(IContentInfo.Id), $"WHERE ({nameof(IContentInfo.ChannelId)} = {channelId} AND {nameof(IContentInfo.Taxis)} < {taxis} AND {nameof(IContentInfo.IsChecked)} = '{true}')", $"ORDER BY {nameof(IContentInfo.Taxis)} DESC", 0, 1);
             }
 
-            using (var rdr = _helper.ExecuteReader(_connectionString, sqlString))
+            using (var rdr = Context.DatabaseApi.ExecuteReader(Context.ConnectionString, sqlString))
             {
                 if (rdr.Read() && !rdr.IsDBNull(0))
                 {
-                    contentId = _helper.GetInt(rdr, 0);
+                    contentId = Context.DatabaseApi.GetInt(rdr, 0);
                 }
                 rdr.Close();
             }

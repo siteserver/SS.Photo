@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using SiteServer.Plugin;
 using SS.Photo.Core;
+using SS.Photo.Provider;
 
 namespace SS.Photo.Parse
 {
@@ -20,7 +21,7 @@ namespace SS.Photo.Parse
 
             var contentInfo = context.ContentInfo ?? Context.ContentApi.GetContentInfo(context.SiteId, context.ChannelId, context.ContentId);
 
-            var photoInfoList = Main.PhotoDao.GetPhotoInfoList(context.SiteId, context.ChannelId, context.ContentId);
+            var photoInfoList = PhotoDao.GetPhotoInfoList(context.SiteId, context.ChannelId, context.ContentId);
 
             var builder = new StringBuilder();
 
@@ -66,7 +67,7 @@ var slide_data = {
 ");
 
             var contentTableName = Context.ContentApi.GetTableName(context.SiteId, contentInfo.ChannelId);
-            var siblingContentId = Main.PhotoDao.GetSiblingContentId(contentTableName, contentInfo.ChannelId,
+            var siblingContentId = PhotoDao.GetSiblingContentId(contentTableName, contentInfo.ChannelId,
                 contentInfo.Taxis, true);
 
             if (siblingContentId > 0)
@@ -74,7 +75,7 @@ var slide_data = {
                 var title = Context.ContentApi.GetContentValue(context.SiteId, contentInfo.ChannelId,
                     siblingContentId, nameof(IContentInfo.Title));
                 var url = Context.ContentApi.GetContentUrl(context.SiteId, contentInfo.ChannelId, siblingContentId);
-                var photoInfo = Main.PhotoDao.GetFirstPhotoInfo(context.SiteId, contentInfo.ChannelId, siblingContentId);
+                var photoInfo = PhotoDao.GetFirstPhotoInfo(context.SiteId, contentInfo.ChannelId, siblingContentId);
                 var previewUrl = photoInfo != null ? photoInfo.SmallUrl : sGifUrl;
                 builder.Append($@"""next_album"":{{""title"":""{Utils.ToJsString(title)}"",""url"":""{Utils.ToJsString(url)}"",""previewUrl"":""{Utils
                         .ToJsString(previewUrl)}""}},");
@@ -85,7 +86,7 @@ var slide_data = {
             }
 
             //siblingContentId = BaiRongDataProvider.ContentDao.GetContentId(pageInfo.PublishmentSystemInfo.AuxiliaryTableForContent, contentInfo.ChannelId, contentInfo.Taxis, false);
-            siblingContentId = Main.PhotoDao.GetSiblingContentId(contentTableName, contentInfo.ChannelId,
+            siblingContentId = PhotoDao.GetSiblingContentId(contentTableName, contentInfo.ChannelId,
                 contentInfo.Taxis, false);
 
             if (siblingContentId > 0)
@@ -93,7 +94,7 @@ var slide_data = {
                 var title = Context.ContentApi.GetContentValue(context.SiteId, contentInfo.ChannelId,
                     siblingContentId, nameof(IContentInfo.Title));
                 var url = Context.ContentApi.GetContentUrl(context.SiteId, contentInfo.ChannelId, siblingContentId);
-                var photoInfo = Main.PhotoDao.GetFirstPhotoInfo(context.SiteId, contentInfo.ChannelId, siblingContentId);
+                var photoInfo = PhotoDao.GetFirstPhotoInfo(context.SiteId, contentInfo.ChannelId, siblingContentId);
                 var previewUrl = photoInfo != null ? photoInfo.SmallUrl : sGifUrl;
                 builder.Append($@"""prev_album"":{{""title"":""{Utils.ToJsString(title)}"",""url"":""{Utils.ToJsString(url)}"",""previewUrl"":""{Utils.ToJsString(previewUrl)}""}}");
             }

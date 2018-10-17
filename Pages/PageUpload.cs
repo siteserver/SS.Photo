@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web;
 using System.Web.UI;
 using SS.Photo.Core;
+using SS.Photo.Provider;
 
 namespace SS.Photo.Pages
 {
@@ -15,7 +16,7 @@ namespace SS.Photo.Pages
 
         public string UploadUrl => HandlerUpload.GetRedirectUrl(_siteId, _channelId, _contentId);
 
-        public string Photos => Utils.JsonSerialize(Main.PhotoDao.GetPhotoInfoList(_siteId, _channelId, _contentId));
+        public string Photos => Utils.JsonSerialize(PhotoDao.GetPhotoInfoList(_siteId, _channelId, _contentId));
 
         public void Page_Load(object sender, EventArgs e)
         {
@@ -36,7 +37,7 @@ namespace SS.Photo.Pages
                 var postData = Utils.PostData;
                 var photoId = Utils.GetPostInt(postData, "photoId");
                 var description = Utils.GetPostString(postData, "description");
-                Main.PhotoDao.UpdateDescription(photoId, description);
+                PhotoDao.UpdateDescription(photoId, description);
 
                 HttpContext.Current.Response.Write(Utils.JsonSerialize(new { }));
                 HttpContext.Current.Response.End();
@@ -45,7 +46,7 @@ namespace SS.Photo.Pages
             {
                 var postData = Utils.PostData;
                 var photoIds = Utils.GetPostObject<List<int>>(postData, "photoIds");
-                Main.PhotoDao.UpdateTaxis(photoIds);
+                PhotoDao.UpdateTaxis(photoIds);
 
                 HttpContext.Current.Response.Write(Utils.JsonSerialize(new { }));
                 HttpContext.Current.Response.End();
@@ -55,7 +56,7 @@ namespace SS.Photo.Pages
                 var postData = Utils.PostData;
                 var photoId = Utils.GetPostInt(postData, "photoId");
 
-                Main.PhotoDao.Delete(photoId);
+                PhotoDao.Delete(photoId);
 
                 HttpContext.Current.Response.Write(Utils.JsonSerialize(new { }));
                 HttpContext.Current.Response.End();

@@ -2,6 +2,7 @@
 using SiteServer.Plugin;
 using SS.Photo.Core;
 using SS.Photo.Model;
+using SS.Photo.Provider;
 
 namespace SS.Photo.Parse
 {
@@ -49,7 +50,7 @@ namespace SS.Photo.Parse
                 }
             }
 
-            var photoInfoList = Main.PhotoDao.GetPhotoInfoList(context.SiteId, context.ChannelId, context.ContentId);
+            var photoInfoList = PhotoDao.GetPhotoInfoList(context.SiteId, context.ChannelId, context.ContentId);
             if (photoInfoList.Count == 0) return string.Empty;
 
             if (startNum > 1 || totalNum > 0)

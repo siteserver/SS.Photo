@@ -14,9 +14,6 @@ namespace SS.Photo
 
         public static IRequest Request => Context.Request;
 
-        public static Dao Dao { get; private set; }
-        public static PhotoDao PhotoDao { get; private set; }
-
         private static readonly Dictionary<int, ConfigInfo> ConfigInfoDict = new Dictionary<int, ConfigInfo>();
 
         public static ConfigInfo GetConfigInfo(int siteId)
@@ -31,9 +28,6 @@ namespace SS.Photo
         public override void Startup(IService service)
         {
             PluginId = Id;
-
-            Dao = new Dao();
-            PhotoDao = new PhotoDao();
 
             service
                 .AddSiteMenu(siteId => new Menu
