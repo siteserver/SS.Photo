@@ -11,14 +11,14 @@ namespace SS.Photo.Parse
 
         public static string Parse(IParseContext context)
         {
-            var sGifUrl = Main.Instance.PluginApi.GetPluginUrl("assets/slide/s.gif");
-            var jqueryUrl = Main.Instance.PluginApi.GetPluginUrl("assets/slide/js/jquery-1.9.1.min.js");
-            var swfobjectUrl = Main.Instance.PluginApi.GetPluginUrl("assets/slide/js/swfobject.js");
-            var fullScreenSwf = Main.Instance.PluginApi.GetPluginUrl("assets/slide/fullscreen.swf");
-            var js = Main.Instance.PluginApi.GetPluginUrl("assets/slide/script.js");
-            var css = Main.Instance.PluginApi.GetPluginUrl("assets/slide/style.css");
+            var sGifUrl = Context.PluginApi.GetPluginUrl(Main.PluginId, "assets/slide/s.gif");
+            var jqueryUrl = Context.PluginApi.GetPluginUrl(Main.PluginId, "assets/slide/js/jquery-1.9.1.min.js");
+            var swfobjectUrl = Context.PluginApi.GetPluginUrl(Main.PluginId, "assets/slide/js/swfobject.js");
+            var fullScreenSwf = Context.PluginApi.GetPluginUrl(Main.PluginId, "assets/slide/fullscreen.swf");
+            var js = Context.PluginApi.GetPluginUrl(Main.PluginId, "assets/slide/script.js");
+            var css = Context.PluginApi.GetPluginUrl(Main.PluginId, "assets/slide/style.css");
 
-            var contentInfo = context.ContentInfo ?? Main.Instance.ContentApi.GetContentInfo(context.SiteId, context.ChannelId, context.ContentId);
+            var contentInfo = context.ContentInfo ?? Context.ContentApi.GetContentInfo(context.SiteId, context.ChannelId, context.ContentId);
 
             var photoInfoList = Main.PhotoDao.GetPhotoInfoList(context.SiteId, context.ChannelId, context.ContentId);
 
@@ -65,15 +65,15 @@ var slide_data = {
     ],
 ");
 
-            var contentTableName = Main.Instance.ContentApi.GetTableName(context.SiteId, contentInfo.ChannelId);
+            var contentTableName = Context.ContentApi.GetTableName(context.SiteId, contentInfo.ChannelId);
             var siblingContentId = Main.PhotoDao.GetSiblingContentId(contentTableName, contentInfo.ChannelId,
                 contentInfo.Taxis, true);
 
             if (siblingContentId > 0)
             {
-                var title = Main.Instance.ContentApi.GetContentValue(context.SiteId, contentInfo.ChannelId,
+                var title = Context.ContentApi.GetContentValue(context.SiteId, contentInfo.ChannelId,
                     siblingContentId, nameof(IContentInfo.Title));
-                var url = Main.Instance.ContentApi.GetContentUrl(context.SiteId, contentInfo.ChannelId, siblingContentId);
+                var url = Context.ContentApi.GetContentUrl(context.SiteId, contentInfo.ChannelId, siblingContentId);
                 var photoInfo = Main.PhotoDao.GetFirstPhotoInfo(context.SiteId, contentInfo.ChannelId, siblingContentId);
                 var previewUrl = photoInfo != null ? photoInfo.SmallUrl : sGifUrl;
                 builder.Append($@"""next_album"":{{""title"":""{Utils.ToJsString(title)}"",""url"":""{Utils.ToJsString(url)}"",""previewUrl"":""{Utils
@@ -90,9 +90,9 @@ var slide_data = {
 
             if (siblingContentId > 0)
             {
-                var title = Main.Instance.ContentApi.GetContentValue(context.SiteId, contentInfo.ChannelId,
+                var title = Context.ContentApi.GetContentValue(context.SiteId, contentInfo.ChannelId,
                     siblingContentId, nameof(IContentInfo.Title));
-                var url = Main.Instance.ContentApi.GetContentUrl(context.SiteId, contentInfo.ChannelId, siblingContentId);
+                var url = Context.ContentApi.GetContentUrl(context.SiteId, contentInfo.ChannelId, siblingContentId);
                 var photoInfo = Main.PhotoDao.GetFirstPhotoInfo(context.SiteId, contentInfo.ChannelId, siblingContentId);
                 var previewUrl = photoInfo != null ? photoInfo.SmallUrl : sGifUrl;
                 builder.Append($@"""prev_album"":{{""title"":""{Utils.ToJsString(title)}"",""url"":""{Utils.ToJsString(url)}"",""previewUrl"":""{Utils.ToJsString(previewUrl)}""}}");

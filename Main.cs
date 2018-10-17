@@ -10,25 +10,27 @@ namespace SS.Photo
 {
     public class Main : PluginBase
     {
+        public static string PluginId { get; private set; }
+
+        public static IRequest Request => Context.Request;
+
         public static Dao Dao { get; private set; }
         public static PhotoDao PhotoDao { get; private set; }
 
         private static readonly Dictionary<int, ConfigInfo> ConfigInfoDict = new Dictionary<int, ConfigInfo>();
 
-        public ConfigInfo GetConfigInfo(int siteId)
+        public static ConfigInfo GetConfigInfo(int siteId)
         {
             if (!ConfigInfoDict.ContainsKey(siteId))
             {
-                ConfigInfoDict[siteId] = ConfigApi.GetConfig<ConfigInfo>(siteId) ?? new ConfigInfo();
+                ConfigInfoDict[siteId] = Context.ConfigApi.GetConfig<ConfigInfo>(PluginId, siteId) ?? new ConfigInfo();
             }
             return ConfigInfoDict[siteId];
         }
 
-        internal static Main Instance { get; private set; }
-
         public override void Startup(IService service)
         {
-            Instance = this;
+            PluginId = Id;
 
             Dao = new Dao();
             PhotoDao = new PhotoDao();
@@ -77,7 +79,7 @@ namespace SS.Photo
                 photoInfo.SiteId = e.TargetSiteId;
                 photoInfo.ContentId = e.TargetContentId;
 
-                UtilsApi.MoveFiles(e.SiteId, e.TargetSiteId, new List<string>
+                Context.UtilsApi.MoveFiles(e.SiteId, e.TargetSiteId, new List<string>
                 {
                     photoInfo.SmallUrl,
                     photoInfo.MiddleUrl,

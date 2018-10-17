@@ -6,6 +6,7 @@ using SS.Photo.Model;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using SiteServer.Plugin;
 
 namespace SS.Photo.Pages
 {
@@ -43,7 +44,7 @@ namespace SS.Photo.Pages
 
                     if (string.IsNullOrEmpty(fileName)) fileName = Path.GetFileName(file.FileName);
 
-                    var filePath = Main.Instance.UtilsApi.GetUploadFilePath(siteId, fileName);
+                    var filePath = Context.UtilsApi.GetUploadFilePath(siteId, fileName);
                     file.SaveAs(filePath);
 
                     photoInfo = InsertPhoto(filePath, siteId, channelId, contentId);
@@ -53,7 +54,7 @@ namespace SS.Photo.Pages
             {
                 //秒传或断点续传
                 //var path = context.Server.MapPath("~/upload/" + hash);
-                var path = Main.Instance.UtilsApi.GetUploadFilePath(siteId, hash);
+                var path = Context.UtilsApi.GetUploadFilePath(siteId, hash);
                 var pathOk = path + Path.GetExtension(fileName);
 
                 //状态查询
@@ -100,8 +101,8 @@ namespace SS.Photo.Pages
 
         private static PhotoInfo InsertPhoto(string filePath, int siteId, int channelId, int contentId)
         {
-            var configInfo = Main.Instance.GetConfigInfo(siteId);
-            var largeUrl = Main.Instance.SiteApi.GetSiteUrlByFilePath(filePath);
+            var configInfo = Main.GetConfigInfo(siteId);
+            var largeUrl = Context.SiteApi.GetSiteUrlByFilePath(filePath);
             var smallUrl = largeUrl;
             var middleUrl = largeUrl;
 
@@ -136,10 +137,10 @@ namespace SS.Photo.Pages
             }
 
             var resizeFileName = $"{Path.GetFileNameWithoutExtension(filePath)}_{maxWidth}.png";
-            var resizeFilePath = Main.Instance.UtilsApi.GetUploadFilePath(siteId, resizeFileName);
+            var resizeFilePath = Context.UtilsApi.GetUploadFilePath(siteId, resizeFileName);
             newImage.Save(resizeFilePath, ImageFormat.Png);
 
-            return Main.Instance.SiteApi.GetSiteUrlByFilePath(resizeFilePath);
+            return Context.SiteApi.GetSiteUrlByFilePath(resizeFilePath);
         }
 
         /// <summary>

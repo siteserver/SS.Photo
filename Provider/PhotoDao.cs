@@ -67,8 +67,8 @@ namespace SS.Photo.Provider
 
         public PhotoDao()
         {
-            _connectionString = Main.Instance.ConnectionString;
-            _helper = Main.Instance.DatabaseApi;
+            _connectionString = Context.ConnectionString;
+            _helper = Context.DatabaseApi;
         }
 
         private static readonly string ParmId = $"@{nameof(PhotoInfo.Id)}";

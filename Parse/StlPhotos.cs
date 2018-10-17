@@ -45,7 +45,7 @@ namespace SS.Photo.Parse
                 }
                 else if (Utils.EqualsIgnoreCase(name, AttributeWhere))
                 {
-                    where = Main.Instance.ParseApi.ParseAttributeValue(value, context);
+                    where = Context.ParseApi.ParseAttributeValue(value, context);
                 }
             }
 
@@ -84,7 +84,7 @@ namespace SS.Photo.Parse
             foreach (var photoInfo in photoInfoList)
             {
                 StlPhoto.SetContextItem(context, photoInfo, itemIndex++);
-                parsedContent += Main.Instance.ParseApi.Parse(context.StlInnerHtml, context);
+                parsedContent += Context.ParseApi.Parse(context.StlInnerHtml, context);
             }
 
             return parsedContent;

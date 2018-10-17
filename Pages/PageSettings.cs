@@ -20,14 +20,14 @@ namespace SS.Photo.Pages
         {
             _siteId = Convert.ToInt32(Request.QueryString["siteId"]);
 
-            if (!Main.Instance.AdminApi.HasSitePermissions(_siteId, Main.Instance.Id))
+            if (!Main.Request.AdminPermissions.HasSitePermissions(_siteId, Main.PluginId))
             {
                 HttpContext.Current.Response.Write("<h1>未授权访问</h1>");
                 HttpContext.Current.Response.End();
                 return;
             }
 
-            _configInfo = Main.Instance.GetConfigInfo(_siteId);
+            _configInfo = Main.GetConfigInfo(_siteId);
 
             if (IsPostBack) return;
 
@@ -42,7 +42,7 @@ namespace SS.Photo.Pages
             _configInfo.PhotoSmallWidth = Convert.ToInt32(TbPhotoSmallWidth.Text);
             _configInfo.PhotoMiddleWidth = Convert.ToInt32(TbPhotoMiddleWidth.Text);
 
-            Main.Instance.ConfigApi.SetConfig(_siteId, _configInfo);
+            SiteServer.Plugin.Context.ConfigApi.SetConfig(Main.PluginId, _siteId, _configInfo);
             LtlMessage.Text = Utils.GetMessageHtml("多图内容设置修改成功！", true);
         }
     }
