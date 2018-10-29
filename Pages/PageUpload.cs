@@ -20,12 +20,13 @@ namespace SS.Photo.Pages
 
         public void Page_Load(object sender, EventArgs e)
         {
-            _siteId = Utils.ToInt(Request.QueryString["siteId"]);
-            _channelId = Utils.ToInt(Request.QueryString["channelId"]);
-            _contentId = Utils.ToInt(Request.QueryString["contentId"]);
-            _returnUrl = Request.QueryString["returnUrl"];
+            var request = SiteServer.Plugin.Context.GetCurrentRequest();
+            _siteId = request.GetQueryInt("siteId");
+            _channelId = request.GetQueryInt("channelId");
+            _contentId = request.GetQueryInt("contentId");
+            _returnUrl = request.GetQueryString("returnUrl");
 
-            if (!Main.Request.AdminPermissions.HasSitePermissions(_siteId, Main.PluginId))
+            if (!request.AdminPermissions.HasSitePermissions(_siteId, Main.PluginId))
             {
                 HttpContext.Current.Response.Write("<h1>未授权访问</h1>");
                 HttpContext.Current.Response.End();

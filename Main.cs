@@ -10,9 +10,7 @@ namespace SS.Photo
 {
     public class Main : PluginBase
     {
-        public static string PluginId { get; private set; }
-
-        public static IRequest Request => Context.Request;
+        public const string PluginId = "SS.Photo";
 
         private static readonly Dictionary<int, ConfigInfo> ConfigInfoDict = new Dictionary<int, ConfigInfo>();
 
@@ -27,8 +25,6 @@ namespace SS.Photo
 
         public override void Startup(IService service)
         {
-            PluginId = Id;
-
             service
                 .AddSiteMenu(siteId => new Menu
                 {
@@ -43,7 +39,7 @@ namespace SS.Photo
                         }
                     }
                 })
-                .AddContentMenu(new Menu
+                .AddContentMenu(contentInfo => new Menu
                 {
                     Text = "内容相册",
                     Href = $"{nameof(PageUpload)}.aspx"
