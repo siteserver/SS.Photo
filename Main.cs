@@ -1,24 +1,22 @@
 ﻿using System.Collections.Generic;
 using SiteServer.Plugin;
-using SS.Photo.Model;
-using SS.Photo.Pages;
-using SS.Photo.Parse;
-using SS.Photo.Provider;
+using SS.Photo.Core;
+using SS.Photo.Core.Model;
+using SS.Photo.Core.Parse;
+using SS.Photo.Core.Provider;
 using Menu = SiteServer.Plugin.Menu;
 
 namespace SS.Photo
 {
     public class Main : PluginBase
     {
-        public const string PluginId = "SS.Photo";
-
         private static readonly Dictionary<int, ConfigInfo> ConfigInfoDict = new Dictionary<int, ConfigInfo>();
 
         public static ConfigInfo GetConfigInfo(int siteId)
         {
             if (!ConfigInfoDict.ContainsKey(siteId))
             {
-                ConfigInfoDict[siteId] = Context.ConfigApi.GetConfig<ConfigInfo>(PluginId, siteId) ?? new ConfigInfo();
+                ConfigInfoDict[siteId] = Context.ConfigApi.GetConfig<ConfigInfo>(Utils.PluginId, siteId) ?? new ConfigInfo();
             }
             return ConfigInfoDict[siteId];
         }
@@ -35,14 +33,14 @@ namespace SS.Photo
                         new Menu
                         {
                             Text = "图片上传设置",
-                            Href = $"{nameof(PageSettings)}.aspx"
+                            Href = "pages/settings.html"
                         }
                     }
                 })
                 .AddContentMenu(contentInfo => new Menu
                 {
                     Text = "内容相册",
-                    Href = $"{nameof(PageUpload)}.aspx"
+                    Href = "pages/photos.html"
                 })
                 .AddDatabaseTable(PhotoDao.TableName, PhotoDao.Columns)
                 .AddStlElementParser(StlPhotos.ElementName, StlPhotos.Parse)

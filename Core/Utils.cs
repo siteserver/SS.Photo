@@ -9,8 +9,10 @@ using Newtonsoft.Json.Serialization;
 
 namespace SS.Photo.Core
 {
-    public class Utils
+    public static class Utils
     {
+        public const string PluginId = "SS.Photo";
+
         public static string ToJsString(string value)
         {
             var retval = string.Empty;
@@ -21,19 +23,12 @@ namespace SS.Photo.Core
             return retval;
         }
 
-        public static string GetMessageHtml(string message, bool isSuccess)
-        {
-            return isSuccess
-                ? $@"<div class=""alert alert-success"" role=""alert"">{message}</div>"
-                : $@"<div class=""alert alert-danger"" role=""alert"">{message}</div>";
-        }
-
         public static int ToInt(string intStr)
         {
             return ToInt(intStr, 0);
         }
 
-        public static int ToInt(string intStr, int defaultValue)
+        private static int ToInt(string intStr, int defaultValue)
         {
             int i;
             if (!int.TryParse(intStr?.Trim().TrimStart('0'), out i))
@@ -102,14 +97,14 @@ namespace SS.Photo.Core
             return retVal.ToString();
         }
 
-        public static string StripTags(string inputString)
+        private static string StripTags(string inputString)
         {
             var retval = RegexUtils.Replace("<script[^>]*>.*?<\\/script>", inputString, string.Empty);
             retval = RegexUtils.Replace("<[\\/]?[^>]*>|<[\\S]+", retval, string.Empty);
             return retval;
         }
 
-        public static string Replace(string replace, string input, string to)
+        private static string Replace(string replace, string input, string to)
         {
             var retval = RegexUtils.Replace(replace, input, to);
             if (string.IsNullOrEmpty(replace)) return retval;
@@ -180,12 +175,7 @@ namespace SS.Photo.Core
             return parsedContent;
         }
 
-        public static string MaxLengthText(string inputString, int maxLength)
-        {
-            return MaxLengthText(inputString, maxLength, "...");
-        }
-
-        public static string MaxLengthText(string inputString, int maxLength, string endString)
+        private static string MaxLengthText(string inputString, int maxLength, string endString)
         {
             var retval = inputString;
             try
@@ -284,7 +274,7 @@ namespace SS.Photo.Core
             return retval;
         }
 
-        public static bool IsTwoBytesChar(char chr)
+        private static bool IsTwoBytesChar(char chr)
         {
             // 使用中文支持编码
             return Encoding.GetEncoding("gb2312").GetByteCount(new[] { chr }) == 2;
