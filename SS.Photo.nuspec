@@ -15,7 +15,4 @@
     <copyright>Copyright 2018</copyright>
     <tags>SiteServer CMS Photo Plugin</tags>
   </metadata>
-  <files>
-    <file src="handlerUpload.ashx" target="Content"/>
-  </files>
 </package>
