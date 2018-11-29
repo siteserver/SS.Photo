@@ -76,6 +76,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="docs\README.md" />
+    <None Include="docs\usage.md" />
+    <None Include="docs\_sidebar.md" />
     <None Include="packages.config" />
     <None Include="SS.Photo.nuspec" />
   </ItemGroup>
@@ -120,13 +123,6 @@
     <Content Include="assets\lib\web-uploader\js\spark-md5.js" />
     <Content Include="assets\lib\web-uploader\Q.Uploader.file.all.js" />
     <Content Include="assets\lib\web-uploader\Q.Uploader.image.all.js" />
-    <Content Include="assets\readme\photo.png" />
-    <Content Include="assets\readme\photo001.png" />
-    <Content Include="assets\readme\photo002.png" />
-    <Content Include="assets\readme\photo003.png" />
-    <Content Include="assets\readme\photo004.png" />
-    <Content Include="assets\readme\photo005.png" />
-    <Content Include="assets\readme\photo006.png" />
     <Content Include="assets\slide\fullscreen.swf" />
     <Content Include="assets\slide\images\arr_left.cur" />
     <Content Include="assets\slide\images\arr_right.cur" />
@@ -145,6 +141,17 @@
     <Content Include="assets\slide\script.js" />
     <Content Include="assets\slide\style.css" />
     <Content Include="assets\slide\template.html" />
+    <Content Include="docs\assets\css\vue.css" />
+    <Content Include="docs\assets\js\docsify-4.8.6.min.js" />
+    <Content Include="docs\assets\js\search-4.8.6.min.js" />
+    <Content Include="docs\assets\readme\photo.png" />
+    <Content Include="docs\assets\readme\photo001.png" />
+    <Content Include="docs\assets\readme\photo002.png" />
+    <Content Include="docs\assets\readme\photo003.png" />
+    <Content Include="docs\assets\readme\photo004.png" />
+    <Content Include="docs\assets\readme\photo005.png" />
+    <Content Include="docs\assets\readme\photo006.png" />
+    <Content Include="docs\index.html" />
     <Content Include="logo.svg" />
     <Content Include="pages\photos.html" />
     <Content Include="pages\photos.js" />

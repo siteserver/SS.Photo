@@ -15,4 +15,7 @@
     <copyright>Copyright 2018</copyright>
     <tags>SiteServer CMS Photo Plugin</tags>
   </metadata>
+  <files>
+    <file src="docs\**" target="Content\docs"/>
+  </files>
 </package>
