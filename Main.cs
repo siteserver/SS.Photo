@@ -65,14 +65,18 @@ namespace SS.Photo
             foreach (var photoInfo in photoInfoList)
             {
                 photoInfo.SiteId = e.TargetSiteId;
+                photoInfo.ChannelId = e.TargetChannelId;
                 photoInfo.ContentId = e.TargetContentId;
 
-                Context.UtilsApi.MoveFiles(e.SiteId, e.TargetSiteId, new List<string>
+                if (e.SiteId != e.TargetSiteId)
                 {
-                    photoInfo.SmallUrl,
-                    photoInfo.MiddleUrl,
-                    photoInfo.LargeUrl
-                });
+                    Context.UtilsApi.MoveFiles(e.SiteId, e.TargetSiteId, new List<string>
+                    {
+                        photoInfo.SmallUrl,
+                        photoInfo.MiddleUrl,
+                        photoInfo.LargeUrl
+                    });
+                }
 
                 PhotoDao.Insert(photoInfo);
             }
