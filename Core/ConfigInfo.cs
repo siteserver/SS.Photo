@@ -1,4 +1,4 @@
-﻿namespace SS.Photo.Core.Model
+﻿namespace SS.Photo.Core
 {
     public class ConfigInfo
     {

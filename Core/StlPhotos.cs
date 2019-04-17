@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using SiteServer.Plugin;
-using SS.Photo.Core.Model;
-using SS.Photo.Core.Provider;
 
-namespace SS.Photo.Core.Parse
+namespace SS.Photo.Core
 {
     public class StlPhotos
     {
@@ -17,6 +15,8 @@ namespace SS.Photo.Core.Parse
 
         public static string Parse(IParseContext context)
         {
+            var repository = new PhotoRepository();
+
             var totalNum = 0;
             var startNum = 1;
             var scope = string.Empty;
@@ -49,7 +49,7 @@ namespace SS.Photo.Core.Parse
                 }
             }
 
-            var photoInfoList = PhotoDao.GetPhotoInfoList(context.SiteId, context.ChannelId, context.ContentId);
+            var photoInfoList = repository.GetPhotoInfoList(context.SiteId, context.ChannelId, context.ContentId);
             if (photoInfoList.Count == 0) return string.Empty;
 
             if (startNum > 1 || totalNum > 0)

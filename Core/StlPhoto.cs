@@ -3,9 +3,8 @@ using System.Text;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using SiteServer.Plugin;
-using SS.Photo.Core.Model;
 
-namespace SS.Photo.Core.Parse
+namespace SS.Photo.Core
 {
     public class StlPhoto
 	{

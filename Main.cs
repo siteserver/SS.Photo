@@ -1,28 +1,27 @@
 ﻿using System.Collections.Generic;
 using SiteServer.Plugin;
 using SS.Photo.Core;
-using SS.Photo.Core.Model;
-using SS.Photo.Core.Parse;
-using SS.Photo.Core.Provider;
 using Menu = SiteServer.Plugin.Menu;
 
 namespace SS.Photo
 {
     public class Main : PluginBase
     {
-        private static readonly Dictionary<int, ConfigInfo> ConfigInfoDict = new Dictionary<int, ConfigInfo>();
+        private static readonly Dictionary<int, ConfigInfo> ParmConfigInfoDict = new Dictionary<int, ConfigInfo>();
 
         public static ConfigInfo GetConfigInfo(int siteId)
         {
-            if (!ConfigInfoDict.ContainsKey(siteId))
+            if (!ParmConfigInfoDict.ContainsKey(siteId))
             {
-                ConfigInfoDict[siteId] = Context.ConfigApi.GetConfig<ConfigInfo>(Utils.PluginId, siteId) ?? new ConfigInfo();
+                ParmConfigInfoDict[siteId] = Context.ConfigApi.GetConfig<ConfigInfo>(Utils.PluginId, siteId) ?? new ConfigInfo();
             }
-            return ConfigInfoDict[siteId];
+            return ParmConfigInfoDict[siteId];
         }
 
         public override void Startup(IService service)
         {
+            var repository = new PhotoRepository();
+
             service
                 .AddSiteMenu(siteId => new Menu
                 {
@@ -42,7 +41,7 @@ namespace SS.Photo
                     Text = "内容相册",
                     Href = "pages/photos.html"
                 })
-                .AddDatabaseTable(PhotoDao.TableName, PhotoDao.Columns)
+                .AddDatabaseTable(repository.TableName, repository.TableColumns)
                 .AddStlElementParser(StlPhotos.ElementName, StlPhotos.Parse)
                 .AddStlElementParser(StlPhoto.ElementName, StlPhoto.Parse)
                 .AddStlElementParser(StlSlide.ElementName, StlSlide.Parse)
@@ -54,12 +53,15 @@ namespace SS.Photo
 
         private static void Service_ContentDeleteCompleted(object sender, ContentEventArgs e)
         {
-            PhotoDao.Delete(e.SiteId, e.ChannelId, e.ContentId);
+            var repository = new PhotoRepository();
+            repository.Delete(e.SiteId, e.ChannelId, e.ContentId);
         }
 
         private void Service_ContentTranslateCompleted(object sender, ContentTranslateEventArgs e)
         {
-            var photoInfoList = PhotoDao.GetPhotoInfoList(e.SiteId, e.ChannelId, e.ContentId);
+            var repository = new PhotoRepository();
+
+            var photoInfoList = repository.GetPhotoInfoList(e.SiteId, e.ChannelId, e.ContentId);
             if (photoInfoList.Count <= 0) return;
 
             foreach (var photoInfo in photoInfoList)
@@ -70,7 +72,7 @@ namespace SS.Photo
 
                 if (e.SiteId != e.TargetSiteId)
                 {
-                    Context.UtilsApi.MoveFiles(e.SiteId, e.TargetSiteId, new List<string>
+                    Context.SiteApi.MoveFiles(e.SiteId, e.TargetSiteId, new List<string>
                     {
                         photoInfo.SmallUrl,
                         photoInfo.MiddleUrl,
@@ -78,7 +80,7 @@ namespace SS.Photo
                     });
                 }
 
-                PhotoDao.Insert(photoInfo);
+                repository.Insert(photoInfo);
             }
         }
     }

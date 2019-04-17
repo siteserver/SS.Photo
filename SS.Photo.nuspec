@@ -8,7 +8,7 @@
     <owners>siteserver</owners>
     <licenseUrl>https://github.com/siteserver/SS.Photo/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/siteserver/SS.Photo</projectUrl>
-    <iconUrl>https://plugins.siteserver.cn/ss.photo/logo.svg</iconUrl>
+    <iconUrl>https://www.siteserver.cn/SS.Photo/logo.svg</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>实现内容相册功能</description>
     <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>

@@ -8,8 +8,6 @@ using System.Web;
 using System.Web.Http;
 using SiteServer.Plugin;
 using SS.Photo.Core;
-using SS.Photo.Core.Model;
-using SS.Photo.Core.Provider;
 
 namespace SS.Photo.Controllers
 {
@@ -24,15 +22,18 @@ namespace SS.Photo.Controllers
         {
             try
             {
-                var request = Context.GetCurrentRequest();
+                var request = Context.AuthenticatedRequest;
+
                 var siteId = request.GetQueryInt("siteId");
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, Utils.PluginId)) return Unauthorized();
 
                 var channelId = request.GetQueryInt("channelId");
                 var contentId = request.GetQueryInt("contentId");
-                var photos = PhotoDao.GetPhotoInfoList(siteId, channelId, contentId);
 
-                var adminToken = Context.AdminApi.GetAccessToken(request.AdminId, request.AdminName, DateTime.Now.AddDays(1));
+                var repository = new PhotoRepository();
+                var photos = repository.GetPhotoInfoList(siteId, channelId, contentId);
+
+                var adminToken = Context.AdminApi.GetAccessToken(request.AdminId, request.AdminName, TimeSpan.FromDays(1));
 
                 return Ok(new
                 {
@@ -51,7 +52,8 @@ namespace SS.Photo.Controllers
         {
             try
             {
-                var request = Context.GetCurrentRequest();
+                var request = Context.AuthenticatedRequest;
+
                 var siteId = request.GetQueryInt("siteId");
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, Utils.PluginId)) return Unauthorized();
                 
@@ -74,7 +76,7 @@ namespace SS.Photo.Controllers
 
                     if (string.IsNullOrEmpty(fileName)) fileName = Path.GetFileName(file.FileName);
 
-                    var filePath = Context.UtilsApi.GetUploadFilePath(siteId, fileName);
+                    var filePath = Context.SiteApi.GetUploadFilePath(siteId, fileName);
                     file.SaveAs(filePath);
 
                     photoInfo = InsertPhoto(filePath, siteId, channelId, contentId);
@@ -105,8 +107,18 @@ namespace SS.Photo.Controllers
                 middleUrl = Resize(siteId, filePath, srcImage, configInfo.PhotoMiddleWidth);
             }
 
-            var photoInfo = new PhotoInfo(0, siteId, channelId, contentId, smallUrl, middleUrl, largeUrl, 0, string.Empty);
-            photoInfo.Id = PhotoDao.Insert(photoInfo);
+            var repository = new PhotoRepository();
+
+            var photoInfo = new PhotoInfo
+            {
+                SiteId = siteId,
+                ChannelId = channelId,
+                ContentId = contentId,
+                SmallUrl = smallUrl,
+                MiddleUrl = middleUrl,
+                LargeUrl = largeUrl
+            };
+            photoInfo.Id = repository.Insert(photoInfo);
             return photoInfo;
         }
 
@@ -126,7 +138,7 @@ namespace SS.Photo.Controllers
             }
 
             var resizeFileName = $"{Path.GetFileNameWithoutExtension(filePath)}_{maxWidth}.png";
-            var resizeFilePath = Context.UtilsApi.GetUploadFilePath(siteId, resizeFileName);
+            var resizeFilePath = Context.SiteApi.GetUploadFilePath(siteId, resizeFileName);
             newImage.Save(resizeFilePath, ImageFormat.Png);
 
             return Context.SiteApi.GetSiteUrlByFilePath(resizeFilePath);
@@ -137,7 +149,9 @@ namespace SS.Photo.Controllers
         {
             try
             {
-                var request = Context.GetCurrentRequest();
+                var request = Context.AuthenticatedRequest;
+                var repository = new PhotoRepository();
+
                 var siteId = request.GetPostInt("siteId");
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, Utils.PluginId)) return Unauthorized();
 
@@ -146,12 +160,12 @@ namespace SS.Photo.Controllers
                 if (type == "description")
                 {
                     var description = request.GetPostString("description");
-                    PhotoDao.UpdateDescription(photoId, description);
+                    repository.UpdateDescription(photoId, description);
                 }
                 else if (type == "taxis")
                 {
                     var photoIds = request.GetPostObject<List<int>>("photoIds");
-                    PhotoDao.UpdateTaxis(photoIds);
+                    repository.UpdateTaxis(photoIds);
                 }
 
                 return Ok(new {});
@@ -167,11 +181,13 @@ namespace SS.Photo.Controllers
         {
             try
             {
-                var request = Context.GetCurrentRequest();
+                var request = Context.AuthenticatedRequest;
+                var repository = new PhotoRepository();
+
                 var siteId = request.GetPostInt("siteId");
                 if (!request.IsAdminLoggin || !request.AdminPermissions.HasSitePermissions(siteId, Utils.PluginId)) return Unauthorized();
 
-                PhotoDao.Delete(photoId);
+                repository.Delete(photoId);
 
                 return Ok(new {});
             }
