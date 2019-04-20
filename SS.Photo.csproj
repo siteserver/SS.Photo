@@ -10,10 +10,10 @@
     <Authors>SiteServer CMS</Authors>
     <Company>SiteServer CMS</Company>
     <Product></Product>
-    <Description>SiteServer CMS 内容相册插件</Description>
-    <PackageLicenseUrl>https://github.com/siteserver/SS.Photo/blob/master/LICENSE</PackageLicenseUrl>
+    <Description>实现内容相册功能</Description>
+    <PackageLicense>GPL-3.0</PackageLicense>
     <PackageProjectUrl>https://github.com/siteserver/SS.Photo</PackageProjectUrl>
-    <PackageIconUrl>https://www.siteserver.cn/SS.Photo/logo.svg</PackageIconUrl>
+    <PackageIconUrl>https://www.siteserver.cn/docs/SS.Photo/logo.svg</PackageIconUrl>
     <Copyright>Copyright © SiteServer CMS</Copyright>
     <PackageTags>SiteServer CMS Photo Plugin</PackageTags>
     <RepositoryUrl>https://github.com/siteserver/SS.Photo</RepositoryUrl>
@@ -23,11 +23,16 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
-    <PackageReference Include="SiteServer.Plugin" Version="2.3.4" />
+    <PackageReference Include="SiteServer.Plugin" Version="2.3.6" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="System.Web" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="assets\**" />
+    <Content Include="pages\**" />
   </ItemGroup>
 
 </Project>

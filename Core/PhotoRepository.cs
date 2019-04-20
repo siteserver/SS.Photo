@@ -7,7 +7,7 @@ namespace SS.Photo.Core
 {
     public class PhotoRepository : Repository<PhotoInfo>
     {
-        public PhotoRepository() : base(Context.Environment.Database)
+        public PhotoRepository() : base(Context.Environment.DatabaseType, Context.Environment.ConnectionString)
         {
         }
 
@@ -108,8 +108,7 @@ namespace SS.Photo.Core
 
         private int GetMaxTaxis(int siteId, int channelId, int contentId)
         {
-            return Max(Q
-                       .Select(Attr.Taxis)
+            return Max(Attr.Taxis, Q
                        .Where(Attr.SiteId, siteId)
                        .Where(Attr.ChannelId, channelId)
                        .Where(Attr.ContentId, contentId)
@@ -118,7 +117,7 @@ namespace SS.Photo.Core
 
         public int GetSiblingContentId(string tableName, int channelId, int taxis, bool isNextContent)
         {
-            var contentRepository = new Repository(Context.Environment.Database, tableName);
+            var contentRepository = new Repository(Context.Environment.DatabaseType, Context.Environment.ConnectionString, tableName);
 
             if (isNextContent)
             {
