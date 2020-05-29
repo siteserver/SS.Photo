@@ -13,7 +13,7 @@
     <Description>实现内容相册功能</Description>
     <PackageLicense>GPL-3.0</PackageLicense>
     <PackageProjectUrl>https://github.com/siteserver/SS.Photo</PackageProjectUrl>
-    <PackageIconUrl>https://www.siteserver.cn/docs/ss/photo/logo.svg</PackageIconUrl>
+    <PackageIconUrl>https://storage.sscms.com/plugins/ss.photo/logo.svg</PackageIconUrl>
     <Copyright>Copyright © SiteServer CMS</Copyright>
     <PackageTags>SiteServer CMS Photo Plugin</PackageTags>
     <RepositoryUrl>https://github.com/siteserver/SS.Photo</RepositoryUrl>
@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
-    <PackageReference Include="SiteServer.Plugin" Version="2.3.11" />
+    <PackageReference Include="SiteServer.Plugin" Version="2.3.15" />
   </ItemGroup>
 
   <ItemGroup>
